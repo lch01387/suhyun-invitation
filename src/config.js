@@ -15,10 +15,15 @@ export const WEDDING = {
   // 예식 일시 (연, 월, 일, 시, 분) — 월은 1~12 그대로 적으면 됩니다.
   date: { year: 2026, month: 10, day: 24, hour: 12, minute: 0 },
   venue: {
-    name: '○○웨딩홀 3층 그랜드홀', // TODO: 예식장 이름으로 수정
-    address: '서울특별시 ○○구 ○○로 123', // TODO: 주소로 수정
-    // 네이버 지도에서 장소 검색 후 URL을 붙여넣으세요.
-    mapUrl: 'https://map.naver.com/p/search/%EC%98%88%EC%8B%9D%EC%9E%A5',
+    name: '네이버 1784',
+    address: '경기도 성남시 분당구 정자일로 95',
+    lat: 37.3588179,
+    lng: 127.1052329,
+    mapUrl: 'https://map.naver.com/p/entry/place/1909737461',
+    // 네이버 클라우드 플랫폼 > Maps > Application의 Client ID(ncpKeyId).
+    // Web 서비스 URL에 http://localhost:5173 과 https://lch01387.github.io 를 등록해야 합니다.
+    // (Client Secret은 서버용이므로 여기에 넣지 말 것)
+    mapClientId: 'emchkxaian',
   },
   greeting: [
     '서로가 마주 보며 다져온 사랑을',

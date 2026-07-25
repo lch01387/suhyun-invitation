@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
@@ -72,6 +72,48 @@ function Calendar() {
   )
 }
 
+function NaverMap() {
+  const mapRef = useRef(null)
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    const { lat, lng, mapClientId } = WEDDING.venue
+    if (!mapClientId) {
+      setFailed(true)
+      return
+    }
+
+    const init = () => {
+      const { maps } = window.naver
+      const center = new maps.LatLng(lat, lng)
+      const map = new maps.Map(mapRef.current, {
+        center,
+        zoom: 16,
+        scrollWheel: false,
+      })
+      new maps.Marker({ position: center, map })
+    }
+
+    // 인증 실패 시 네이버 API가 호출하는 전역 콜백
+    window.navermap_authFailure = () => setFailed(true)
+
+    if (window.naver?.maps) {
+      init()
+      return
+    }
+    const script = document.createElement('script')
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${mapClientId}`
+    script.onload = init
+    script.onerror = () => setFailed(true)
+    document.head.appendChild(script)
+  }, [])
+
+  if (failed) {
+    return <div className="map-fallback">지도를 불러오지 못했습니다. 아래 버튼으로 확인해주세요.</div>
+  }
+  return <div className="map-embed" ref={mapRef} />
+}
+
 function ContactRow({ role, person }) {
   return (
     <div className="contact-row">
@@ -125,8 +167,9 @@ export default function App() {
         <h2 className="section-title">오시는 길</h2>
         <p className="venue-name">{venue.name}</p>
         <p className="venue-address">{venue.address}</p>
+        <NaverMap />
         <a className="button" href={venue.mapUrl} target="_blank" rel="noreferrer">
-          지도 보기
+          네이버 지도에서 열기
         </a>
       </section>
 
