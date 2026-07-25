@@ -24,6 +24,10 @@ function Clover({ size = 24, className = '' }) {
   )
 }
 
+function pad(n) {
+  return String(n).padStart(2, '0')
+}
+
 function formatDate() {
   const d = weddingDate()
   const ampm = d.getHours() < 12 ? '오전' : '오후'
@@ -32,31 +36,24 @@ function formatDate() {
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${DAYS[d.getDay()]}요일 ${ampm} ${hour12}시${minute}`
 }
 
-function formatDateEn() {
-  const d = weddingDate()
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-  const pad = (n) => String(n).padStart(2, '0')
-  const h = d.getHours()
-  const ampm = h < 12 ? 'AM' : 'PM'
-  const hour12 = h % 12 || 12
-  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}. ${days[d.getDay()]} ${hour12}:${pad(d.getMinutes())} ${ampm}`
+// 스크롤 시 카드가 아래에서 떠오르는 애니메이션
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal')
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            io.unobserve(entry.target)
+          }
+        }),
+      { threshold: 0.12 },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
 }
-
-// 히어로에 흩뿌려지는 이름 알파벳 뱃지 (x, y는 % 단위)
-const LETTER_BADGES = [
-  ...['C', 'H', 'A', 'N', 'G', 'H', 'Y', 'U', 'N'].map((ch, i) => ({
-    ch,
-    x: [7, 16, 27, 38, 50, 61, 72, 83, 91][i],
-    y: [16, 7, 14, 5, 12, 4, 13, 6, 15][i],
-    alt: false,
-  })),
-  ...['J', 'I', 'S', 'U'].map((ch, i) => ({
-    ch,
-    x: [22, 41, 60, 78][i],
-    y: [24, 22, 25, 23][i],
-    alt: true,
-  })),
-]
 
 function CopyButton({ text, className = '', children }) {
   const [copied, setCopied] = useState(false)
@@ -119,24 +116,28 @@ function Calendar() {
   ]
 
   return (
-    <div className="calendar-blob">
-      <div className="calendar">
-        <div className="calendar-month">
-          {d.getMonth() + 1}월 <span className="calendar-month-en">/ {formatDateEn()}</span>
-        </div>
-        <div className="calendar-grid">
-          {DAYS.map((day) => (
-            <div className="calendar-head" key={day}>
-              {day}
-            </div>
-          ))}
-          {cells.map((day, i) => (
-            <div className={day === d.getDate() ? 'calendar-day wedding-day' : 'calendar-day'} key={i}>
-              {day === d.getDate() && <Clover size={36} className="wedding-clover" />}
-              <span>{day}</span>
-            </div>
-          ))}
-        </div>
+    <div className="calendar">
+      <div className="calendar-grid">
+        {DAYS.map((day, i) => (
+          <div className={i === 0 ? 'calendar-head sunday' : 'calendar-head'} key={day}>
+            {day}
+          </div>
+        ))}
+        {cells.map((day, i) => (
+          <div
+            className={
+              day === d.getDate()
+                ? 'calendar-day wedding-day'
+                : i % 7 === 0
+                  ? 'calendar-day sunday'
+                  : 'calendar-day'
+            }
+            key={i}
+          >
+            {day === d.getDate() && <Clover size={38} className="wedding-clover" />}
+            <span>{day}</span>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -184,28 +185,18 @@ function NaverMap() {
   return <div className="map-embed" ref={mapRef} />
 }
 
-function ContactRow({ role, person }) {
+function AccountCard({ side, entries }) {
   return (
-    <div className="contact-row">
-      <span className="contact-role">{role}</span>
-      <span className="contact-name">{person.name}</span>
-      <a className="contact-call" href={`tel:${person.phone}`}>
-        전화하기
-      </a>
-    </div>
-  )
-}
-
-function AccountCard({ side, entries, tone }) {
-  return (
-    <div className={`account-card ${tone}`}>
-      <span className="account-side hand">{side}</span>
+    <div className="account-card">
+      <span className="account-tag">{side}</span>
       {entries.map((entry) => (
-        <div className="account-entry" key={entry.holder}>
-          <p>{entry.bank}</p>
-          <p className="account-holder">{entry.holder}</p>
-          <CopyButton className="copy-link" text={`${entry.bank} ${entry.holder}`}>
-            복사하기
+        <div className="account-row" key={entry.holder}>
+          <div className="account-info">
+            <p className="account-bank">{entry.bank}</p>
+            <p className="account-holder">{entry.holder}</p>
+          </div>
+          <CopyButton className="pill-button" text={`${entry.bank} ${entry.holder}`}>
+            복사
           </CopyButton>
         </div>
       ))}
@@ -214,41 +205,32 @@ function AccountCard({ side, entries, tone }) {
 }
 
 export default function App() {
+  useReveal()
   const { groom, bride, venue, greeting, account } = WEDDING
+  const d = weddingDate()
 
   return (
     <div className="invitation">
-      <header className="hero">
-        {LETTER_BADGES.map((b, i) => (
-          <span
-            className={b.alt ? 'letter-chip alt' : 'letter-chip'}
-            style={{ left: `${b.x}%`, top: `${b.y}%` }}
-            key={i}
-          >
-            {b.ch}
-          </span>
-        ))}
-        <Clover size={72} className="hero-clover" />
-        <div className="hero-blob">
-          <p className="hero-names-en">
-            {groom.nameEn} <Clover size={14} className="inline-clover" /> {bride.nameEn}
-          </p>
-          <p className="hero-date-en">{formatDateEn()}</p>
-          <p className="hero-venue-en">{venue.name}</p>
+      <header className="card hero reveal">
+        <p className="overline">WEDDING INVITATION</p>
+        <div className="hero-date-big">
+          {pad(d.getMonth() + 1)}
+          <Clover size={34} className="hero-date-clover" />
+          {pad(d.getDate())}
         </div>
-        <p className="hero-script hand">
-          You&rsquo;re invited
-          <br />
-          to our wedding
-        </p>
-        <h1 className="hero-title">
-          {groom.name}, {bride.name} 결혼합니다.
+        <h1 className="hero-names">
+          {groom.name} <span className="hero-amp">&</span> {bride.name}
         </h1>
+        <p className="hero-script hand">평생 함께 할 사람을 만났습니다</p>
+        <div className="hero-meta">
+          <p>{formatDate()}</p>
+          <p>{venue.name}</p>
+        </div>
       </header>
 
-      <section className="section">
+      <section className="card reveal">
         <h2 className="section-heading">모시는 글</h2>
-        <div className="greeting hand">
+        <div className="greeting">
           {greeting.map((line, i) => (line ? <p key={i}>{line}</p> : <br key={i} />))}
         </div>
         <div className="parents">
@@ -261,23 +243,21 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="card reveal">
         <h2 className="section-heading">예식 안내</h2>
         <p className="schedule-date">{formatDate()}</p>
         <Calendar />
         <Countdown />
       </section>
 
-      <section className="section">
-        <h2 className="section-heading">
-          오시는 길
-          <span className="section-sub">{venue.name}</span>
-        </h2>
+      <section className="card reveal">
+        <h2 className="section-heading">오시는 길</h2>
+        <p className="venue-name">{venue.name}</p>
         <p className="venue-address">{venue.address}</p>
+        <NaverMap />
         <CopyButton className="copy-button" text={venue.address}>
           주소 복사하기
         </CopyButton>
-        <NaverMap />
         <div className="map-apps">
           {[
             {
@@ -302,34 +282,48 @@ export default function App() {
             </a>
           ))}
         </div>
-        {venue.transit.map((t) => (
-          <div className="transit" key={t.title}>
-            <h3>
-              {t.icon} {t.title}
-            </h3>
-            {t.lines.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-        ))}
+        <div className="transit-list">
+          {venue.transit.map((t) => (
+            <div className="transit" key={t.title}>
+              <h3>
+                <span className="transit-icon">{t.icon}</span> {t.title}
+              </h3>
+              {t.lines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="section">
+      <section className="card reveal">
         <h2 className="section-heading">연락하기</h2>
-        <ContactRow role="신랑" person={groom} />
-        <ContactRow role="신부" person={bride} />
+        <div className="contact-row">
+          <span className="contact-role">신랑</span>
+          <span className="contact-name">{groom.name}</span>
+          <a className="pill-button" href={`tel:${groom.phone}`}>
+            전화하기
+          </a>
+        </div>
+        <div className="contact-row">
+          <span className="contact-role">신부</span>
+          <span className="contact-name">{bride.name}</span>
+          <a className="pill-button" href={`tel:${bride.phone}`}>
+            전화하기
+          </a>
+        </div>
       </section>
 
-      <section className="section">
+      <section className="card reveal">
         <h2 className="section-heading">마음 전하실 곳</h2>
         <div className="accounts">
-          <AccountCard side="신랑 측" entries={account.groom} tone="groom" />
-          <AccountCard side="신부 측" entries={account.bride} tone="bride" />
+          <AccountCard side="신랑 측" entries={account.groom} />
+          <AccountCard side="신부 측" entries={account.bride} />
         </div>
       </section>
 
       <footer className="footer">
-        {groom.name} <Clover size={16} className="inline-clover" /> {bride.name}
+        {groom.name} <Clover size={15} className="inline-clover" /> {bride.name}
       </footer>
     </div>
   )

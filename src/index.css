@@ -1,13 +1,12 @@
 :root {
-  --bg-dark: #232321;
-  --paper: #f2eee3;
-  --line: #ddd5c2;
-  --ink: #2c2a26;
-  --ink-soft: #6f6a5f;
-  --green: #3f8f5c;
-  --green-deep: #2e6b45;
-  --green-soft: #dcead9;
-  --cream: #f6f1de;
+  --bg: #f2f2f2;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --ink-soft: #8a8a86;
+  --line: #ececea;
+  --green: #5c8d6b;
+  --green-deep: #3d6b4f;
+  --mint: #eef4ef;
 }
 
 * {
@@ -16,9 +15,13 @@
   box-sizing: border-box;
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: var(--bg-dark);
+  background: var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -31,188 +34,176 @@ body {
   max-width: 430px;
   margin: 0 auto;
   min-height: 100vh;
-  background: var(--paper);
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.55);
+  padding: 16px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .inline-clover {
-  color: inherit;
+  color: var(--green);
   vertical-align: -2px;
+}
+
+/* ── Card & reveal ──────────────── */
+.card {
+  background: var(--card);
+  border-radius: 24px;
+  padding: 48px 26px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
 }
 
 /* ── Hero ───────────────────────── */
 .hero {
-  position: relative;
-  padding: 200px 26px 72px;
   text-align: center;
-  overflow: hidden;
-  border-bottom: 1px solid var(--line);
+  padding: 72px 26px 64px;
 }
 
-.letter-chip {
-  position: absolute;
-  width: 27px;
-  height: 27px;
-  border-radius: 50%;
-  background: var(--green);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
+.overline {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--green);
+  margin-bottom: 36px;
+}
+
+.hero-date-big {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-.letter-chip.alt {
-  background: #a5cdb2;
-  color: var(--green-deep);
-}
-
-.hero-clover {
-  color: var(--green);
-  margin-bottom: -14px;
-}
-
-.hero-blob {
-  background: var(--green);
-  color: #fff;
-  clip-path: polygon(50% 3%, 86% 10%, 100% 42%, 93% 87%, 52% 100%, 9% 92%, 0% 45%, 12% 9%);
-  padding: 64px 28px 72px;
-  margin: 0 6px;
-}
-
-.hero-names-en {
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-.hero-names-en .inline-clover {
-  color: #d9ecc9;
-}
-
-.hero-date-en {
-  margin-top: 20px;
-  font-size: 0.92rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-}
-
-.hero-venue-en {
-  margin-top: 6px;
-  font-size: 0.88rem;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  color: #e3f0d9;
-}
-
-.hero-script {
-  position: relative;
-  z-index: 2;
-  display: inline-block;
-  background: #fff;
-  color: var(--green-deep);
-  font-size: 2.1rem;
-  line-height: 1.05;
-  padding: 12px 26px 14px;
-  border-radius: 8px;
-  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.12);
-  transform: rotate(-3deg);
-  margin-top: -34px;
-}
-
-.hero-title {
-  margin-top: 44px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-/* ── Sections ───────────────────── */
-.section {
-  padding: 60px 28px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-}
-
-.section-heading {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 26px;
-}
-
-.section-sub {
-  display: block;
-  margin-top: 6px;
-  color: var(--green-deep);
-}
-
-/* ── Greeting ───────────────────── */
-.greeting p {
-  font-size: 1.75rem;
-  line-height: 1.5;
+  gap: 16px;
+  font-size: 4.6rem;
+  font-weight: 200;
+  letter-spacing: 0.04em;
+  line-height: 1;
   color: var(--ink);
 }
 
-.parents {
-  margin-top: 32px;
-  font-size: 0.88rem;
+.hero-date-clover {
+  color: var(--green);
+}
+
+.hero-names {
+  margin-top: 30px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.hero-amp {
+  font-weight: 300;
+  color: var(--green);
+  margin: 0 6px;
+}
+
+.hero-script {
+  margin-top: 14px;
+  font-size: 1.5rem;
+  color: var(--green-deep);
+}
+
+.hero-meta {
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.9;
+}
+
+/* ── Section ────────────────────── */
+.section-heading {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--green);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* ── Greeting ───────────────────── */
+.greeting {
+  text-align: center;
+}
+
+.greeting p {
+  font-size: 0.95rem;
+  font-weight: 300;
   line-height: 2;
+}
+
+.parents {
+  margin-top: 36px;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 2.1;
   color: var(--ink-soft);
 }
 
 .parents strong {
   color: var(--ink);
+  font-weight: 700;
   margin-left: 6px;
 }
 
 /* ── Schedule / Calendar ────────── */
 .schedule-date {
+  text-align: center;
   font-size: 0.95rem;
   font-weight: 500;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
-.calendar-blob {
-  background: var(--green);
-  clip-path: polygon(3% 6%, 52% 0%, 97% 4%, 100% 55%, 96% 96%, 48% 100%, 4% 95%, 0% 50%);
-  padding: 40px 22px 44px;
-  margin-bottom: 32px;
-}
-
-.calendar-month {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 18px;
-}
-
-.calendar-month-en {
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: #d9ecc9;
+.calendar {
+  background: var(--mint);
+  border-radius: 20px;
+  padding: 24px 16px;
+  margin-bottom: 28px;
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px 0;
+  gap: 2px 0;
   text-align: center;
 }
 
 .calendar-head {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.75);
-  padding-bottom: 8px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding-bottom: 10px;
+}
+
+.calendar-head.sunday {
+  color: #c47a6d;
 }
 
 .calendar-day {
   position: relative;
-  font-size: 0.88rem;
-  line-height: 36px;
-  height: 36px;
-  color: #eef5e8;
+  font-size: 0.86rem;
+  line-height: 38px;
+  height: 38px;
+  color: var(--ink);
+}
+
+.calendar-day.sunday {
+  color: #c47a6d;
 }
 
 .calendar-day span {
@@ -221,7 +212,7 @@ body {
 }
 
 .wedding-day {
-  color: var(--green-deep);
+  color: #fff;
   font-weight: 700;
 }
 
@@ -230,93 +221,103 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -54%);
-  color: #fff;
+  color: var(--green);
 }
 
 /* ── Countdown ──────────────────── */
 .countdown {
   display: flex;
   justify-content: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .countdown-item {
-  background: #fff;
-  border-radius: 10px;
-  padding: 12px 0;
-  width: 66px;
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 14px 0 12px;
+  width: 72px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .countdown-value {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--green-deep);
+  font-variant-numeric: tabular-nums;
 }
 
 .countdown-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
   color: var(--ink-soft);
 }
 
 .countdown-done {
+  text-align: center;
   color: var(--green-deep);
   font-size: 0.95rem;
 }
 
 /* ── Venue ──────────────────────── */
+.venue-name {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
 .venue-address {
-  font-size: 0.92rem;
+  text-align: center;
+  font-size: 0.88rem;
   color: var(--ink-soft);
-  margin-bottom: 16px;
-}
-
-.copy-button {
-  display: inline-block;
-  background: var(--green);
-  color: #fff;
-  border: none;
-  padding: 11px 20px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.copy-button:active {
-  background: var(--green-deep);
+  margin-top: 8px;
 }
 
 .map-embed {
   width: 100%;
-  height: 340px;
+  height: 320px;
   margin-top: 24px;
-  border-radius: 10px;
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid var(--line);
 }
 
 .map-fallback {
   margin-top: 24px;
   padding: 32px 16px;
   border: 1px dashed var(--line);
-  border-radius: 10px;
+  border-radius: 18px;
   font-size: 0.85rem;
   color: var(--ink-soft);
   text-align: center;
 }
 
+.copy-button {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  padding: 15px 0;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.copy-button:active {
+  background: var(--green-deep);
+}
+
 .map-apps {
   display: flex;
   justify-content: center;
-  gap: 32px;
-  margin-top: 22px;
+  gap: 36px;
+  margin-top: 26px;
 }
 
 .map-app {
@@ -328,29 +329,47 @@ body {
 }
 
 .map-app img {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.map-app:active img {
+  transform: scale(0.94);
 }
 
 .map-app span {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--ink-soft);
 }
 
+.transit-list {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .transit {
-  margin-top: 28px;
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 18px 20px;
 }
 
 .transit h3 {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+.transit-icon {
+  margin-right: 4px;
 }
 
 .transit p {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   line-height: 1.7;
   color: var(--ink-soft);
 }
@@ -359,92 +378,91 @@ body {
 .contact-row {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 10px 0;
+  padding: 14px 6px;
+}
+
+.contact-row + .contact-row {
+  border-top: 1px solid var(--line);
 }
 
 .contact-role {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--ink-soft);
-  width: 40px;
+  width: 52px;
 }
 
 .contact-name {
+  flex: 1;
   font-size: 1rem;
   font-weight: 700;
-  width: 80px;
 }
 
-.contact-call {
-  font-size: 0.8rem;
+.pill-button {
+  background: var(--mint);
   color: var(--green-deep);
+  border: none;
   text-decoration: none;
-  border: 1px solid var(--green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
   border-radius: 999px;
-  padding: 7px 18px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pill-button:active {
+  background: #dce8de;
 }
 
 /* ── Accounts ───────────────────── */
 .accounts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .account-card {
-  position: relative;
-  padding: 44px 10px 30px;
-  text-align: center;
-  font-size: 0.8rem;
+  background: var(--bg);
+  border-radius: 18px;
+  padding: 20px;
 }
 
-.account-card.groom {
-  background: var(--cream);
-  clip-path: polygon(2% 9%, 50% 0%, 98% 7%, 100% 93%, 53% 100%, 0% 96%);
+.account-tag {
+  display: inline-block;
+  background: var(--green);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 5px 12px;
+  margin-bottom: 6px;
 }
 
-.account-card.bride {
-  background: var(--green-soft);
-  clip-path: polygon(0% 7%, 47% 0%, 100% 9%, 98% 95%, 50% 100%, 2% 94%);
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 2px 4px;
 }
 
-.account-side {
-  position: absolute;
-  top: 14px;
-  left: 16px;
-  transform: rotate(-10deg);
-  font-size: 1.25rem;
-  color: var(--green-deep);
-}
-
-.account-entry p {
-  line-height: 1.6;
+.account-bank {
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .account-holder {
-  font-weight: 700;
-}
-
-.copy-link {
-  background: none;
-  border: none;
-  font-family: inherit;
   font-size: 0.78rem;
-  text-decoration: underline;
-  color: var(--ink);
-  cursor: pointer;
-  margin-top: 8px;
+  color: var(--ink-soft);
+  margin-top: 2px;
 }
 
 /* ── Footer ─────────────────────── */
 .footer {
-  padding: 48px 24px;
+  padding: 36px 24px 28px;
   text-align: center;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-}
-
-.footer .inline-clover {
-  color: var(--green);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
 }
