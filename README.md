@@ -1,11 +1,1 @@
 # suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
-# suhyun-invitation
