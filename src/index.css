@@ -1,0 +1,263 @@
+:root {
+  --ink: #4a3f3a;
+  --ink-soft: #7d6f68;
+  --accent: #c08497;
+  --accent-deep: #a56576;
+  --paper: #fdfbf7;
+  --line: #e9dfd6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Serif KR', serif;
+  background: #efe9e1;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.invitation {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--paper);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Hero ───────────────────────── */
+.hero {
+  padding: 96px 24px 72px;
+  text-align: center;
+  background: linear-gradient(180deg, #fff7f4 0%, var(--paper) 100%);
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-script {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 32px;
+}
+
+.hero-names {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-and {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+  letter-spacing: 0.2em;
+}
+
+.hero-date {
+  margin-top: 40px;
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+.hero-venue {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+/* ── Sections ───────────────────── */
+.section {
+  padding: 56px 28px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  color: var(--accent-deep);
+  margin-bottom: 32px;
+}
+
+.greeting p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.9;
+}
+
+.parents {
+  margin-top: 36px;
+  font-size: 0.9rem;
+  line-height: 2;
+  color: var(--ink-soft);
+}
+
+.parents strong {
+  color: var(--ink);
+  margin-left: 6px;
+}
+
+/* ── Calendar ───────────────────── */
+.calendar {
+  max-width: 300px;
+  margin: 0 auto 36px;
+}
+
+.calendar-month {
+  font-size: 1.4rem;
+  color: var(--accent-deep);
+  margin-bottom: 16px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px 0;
+}
+
+.calendar-head {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  padding-bottom: 8px;
+}
+
+.calendar-day {
+  font-size: 0.85rem;
+  line-height: 32px;
+  height: 32px;
+}
+
+.wedding-day {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  width: 32px;
+  margin: 0 auto;
+  font-weight: 600;
+}
+
+/* ── Countdown ──────────────────── */
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.countdown-item {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 0;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.countdown-value {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent-deep);
+}
+
+.countdown-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--ink-soft);
+}
+
+.countdown-done {
+  color: var(--accent-deep);
+  font-size: 0.95rem;
+}
+
+/* ── Venue ──────────────────────── */
+.venue-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.venue-address {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+}
+
+.button {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 12px 36px;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+.button:active {
+  background: var(--accent-deep);
+}
+
+/* ── Contact ────────────────────── */
+.contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.contact-role {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  width: 40px;
+}
+
+.contact-name {
+  font-size: 1rem;
+  font-weight: 600;
+  width: 80px;
+}
+
+.contact-call {
+  font-size: 0.8rem;
+  color: var(--accent-deep);
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 6px 16px;
+}
+
+/* ── Account ────────────────────── */
+.account p {
+  font-size: 0.85rem;
+  font-weight: 300;
+  line-height: 2.2;
+}
+
+.account-role {
+  display: inline-block;
+  width: 56px;
+  color: var(--accent-deep);
+  font-weight: 400;
+}
+
+/* ── Footer ─────────────────────── */
+.footer {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.2em;
+}
