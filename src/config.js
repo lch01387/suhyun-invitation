@@ -30,7 +30,7 @@ export const WEDDING = {
       {
         icon: '🚈',
         title: '지하철 이용 시',
-        lines: ['수인분당선 정자역 3번 출구에서 도보 5분'], // TODO: 실제 안내로 수정
+        lines: ['수인분당선 정자역 3번 출구에서 도보 15분'],
       },
       {
         icon: '🚗',
