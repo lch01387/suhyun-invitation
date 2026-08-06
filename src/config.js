@@ -15,7 +15,7 @@ export const WEDDING = {
     phone: '010-0000-0000',
   },
   // 예식 일시 (연, 월, 일, 시, 분) — 월은 1~12 그대로 적으면 됩니다.
-  date: { year: 2026, month: 11, day: 7, hour: 23, minute: 30 },
+  date: { year: 2026, month: 11, day: 7, hour: 12, minute: 30 },
   venue: {
     name: '네이버 1784',
     address: '경기도 성남시 분당구 정자일로 95',

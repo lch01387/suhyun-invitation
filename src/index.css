@@ -147,6 +147,12 @@ body {
   line-height: 2;
 }
 
+.small-heart {
+  font-size: 0.72em;
+  vertical-align: 1px;
+  margin-left: 1px;
+}
+
 .parents {
   margin-top: 36px;
   text-align: center;

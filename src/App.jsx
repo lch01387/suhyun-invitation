@@ -231,7 +231,20 @@ export default function App() {
       <section className="card reveal">
         <h2 className="section-heading">모시는 글</h2>
         <div className="greeting">
-          {greeting.map((line, i) => (line ? <p key={i}>{line}</p> : <br key={i} />))}
+          {greeting.map((line, i) =>
+            line ? (
+              <p key={i}>
+                {line.split('♥').map((part, j, parts) => (
+                  <span key={j}>
+                    {part}
+                    {j < parts.length - 1 && <span className="small-heart">♥</span>}
+                  </span>
+                ))}
+              </p>
+            ) : (
+              <br key={i} />
+            ),
+          )}
         </div>
         <div className="parents">
           <p>
