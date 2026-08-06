@@ -5,13 +5,13 @@ export const WEDDING = {
   groom: {
     name: '창현',
     nameEn: 'CHANGHYUN',
-    parents: '아버지이름 · 어머니이름의 장남', // TODO: 혼주 성함으로 수정
+    parents: '이봉규 · 김인숙의 장남',
     phone: '010-0000-0000',
   },
   bride: {
     name: '지수',
     nameEn: 'JISU',
-    parents: '아버지이름 · 어머니이름의 장녀', // TODO: 혼주 성함으로 수정
+    parents: '하행진 · 김정남의 장녀',
     phone: '010-0000-0000',
   },
   // 예식 일시 (연, 월, 일, 시, 분) — 월은 1~12 그대로 적으면 됩니다.
