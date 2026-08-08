@@ -265,6 +265,10 @@ function Accordion({ title, children, defaultOpen = true }) {
   )
 }
 
+function accountNumberOf(bank) {
+  return bank.trim().split(/\s+/).pop().replace(/-/g, '')
+}
+
 function AccountRows({ entries }) {
   return (
     <>
@@ -274,7 +278,7 @@ function AccountRows({ entries }) {
             <p className="account-bank">{entry.bank}</p>
             <p className="account-holder">{entry.holder}</p>
           </div>
-          <CopyButton className="pill-button" text={`${entry.bank} ${entry.holder}`}>
+          <CopyButton className="pill-button" text={accountNumberOf(entry.bank)}>
             복사하기
           </CopyButton>
         </div>
@@ -283,10 +287,10 @@ function AccountRows({ entries }) {
   )
 }
 
-const BURST_EMOJI = ['🍀', '🎂']
+const BURST_EMOJI = ['🍀']
 
 function makeCloverBurst() {
-  const count = 10 + Math.floor(Math.random() * 7)
+  const count = (10 + Math.floor(Math.random() * 7)) * 3
   return Array.from({ length: count }, () => {
     const angle = Math.random() * 2 * Math.PI
     const distance = 50 + Math.random() * 130
