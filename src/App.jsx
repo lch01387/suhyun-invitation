@@ -65,25 +65,6 @@ function formatDayTime() {
   return `${DAYS[d.getDay()]}요일 ${ampm} ${hour12}시${minute}`
 }
 
-// 스크롤 시 카드가 아래에서 떠오르는 애니메이션
-function useReveal() {
-  useEffect(() => {
-    const els = document.querySelectorAll('.reveal')
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible')
-            io.unobserve(entry.target)
-          }
-        }),
-      { threshold: 0.12 },
-    )
-    els.forEach((el) => io.observe(el))
-    return () => io.disconnect()
-  }, [])
-}
-
 function CopyButton({ text, className = '', children }) {
   const [copied, setCopied] = useState(false)
   const onClick = async () => {
@@ -227,20 +208,9 @@ function NaverMap() {
   return <div className="map-embed" ref={mapRef} />
 }
 
-function Polaroid({ src }) {
-  return (
-    <section className="polaroid-section reveal">
-      <div className="polaroid-card">
-        <img src={src} alt="" loading="lazy" />
-        <span className="polaroid-caption hand">We're getting married!</span>
-      </div>
-    </section>
-  )
-}
-
 function Gallery({ photos }) {
   return (
-    <section className="section reveal">
+    <section className="section">
       <HeartDivider />
       <h2 className="section-heading">웨딩 갤러리</h2>
       <div className="gallery-grid">
@@ -286,51 +256,40 @@ function AccountRows({ entries }) {
 }
 
 export default function App() {
-  useReveal()
   const { groom, bride, venue, greeting, account, photos } = WEDDING
   const d = weddingDate()
 
   return (
     <div className="invitation">
-      <header className="hero-photo reveal">
+      <header className="hero-photo">
         <img className="hero-bg" src={photos.hero} alt="" />
-        <div className="hero-overlay" />
-        <Heart size={22} className="hero-heart hero-heart-1" />
-        <Heart size={18} className="hero-heart hero-heart-2" />
-        <Heart size={20} className="hero-heart hero-heart-3" />
-        <div className="hero-names-en">
-          <span>{groom.nameEn}</span>
-          <span className="hero-and">and</span>
-          <span>{bride.nameEn}</span>
+        <div className="hero-info">
+          <HeartDivider />
+          <p>{venue.name}</p>
+          <p>{formatDate()}</p>
         </div>
-        <p className="hero-date-vertical">
-          {d.getFullYear()}.{pad(d.getMonth() + 1)}.{pad(d.getDate())}
-        </p>
-        <h1 className="hero-script hand">
-          {groom.name}
-          <span className="hero-script-amp">&amp;</span>
-          {bride.name}
-        </h1>
       </header>
 
-      <section className="section reveal">
-        <HeartDivider />
-        <h2 className="section-heading">초대합니다</h2>
-        <div className="greeting">
-          {greeting.map((line, i) =>
-            line ? (
-              <p key={i}>
-                {line.split('♥').map((part, j, parts) => (
-                  <span key={j}>
-                    {part}
-                    {j < parts.length - 1 && <span className="small-heart">♥</span>}
-                  </span>
-                ))}
-              </p>
-            ) : (
-              <br key={i} />
-            ),
-          )}
+      <section className="greeting-section">
+        <div className="invite-block">
+          <HeartDivider />
+          <h2 className="section-heading section-heading-invert">초대합니다</h2>
+          <div className="greeting">
+            {greeting.map((line, i) =>
+              line ? (
+                <p key={i}>
+                  {line.split('♥').map((part, j, parts) => (
+                    <span key={j}>
+                      {part}
+                      {j < parts.length - 1 && <span className="small-heart">♥</span>}
+                    </span>
+                  ))}
+                </p>
+              ) : (
+                <br key={i} />
+              ),
+            )}
+          </div>
         </div>
         <div className="parents">
           <p>
@@ -342,9 +301,7 @@ export default function App() {
         </div>
       </section>
 
-      <Polaroid src={photos.polaroid} />
-
-      <section className="section schedule-section reveal">
+      <section className="section schedule-section">
         <HeartDivider />
         <p className="schedule-big-date">
           {pad(d.getMonth() + 1)} / {pad(d.getDate())}
@@ -356,7 +313,7 @@ export default function App() {
 
       <Gallery photos={photos.gallery} />
 
-      <section className="section reveal">
+      <section className="section">
         <HeartDivider />
         <h2 className="section-heading">식장 위치</h2>
         <p className="venue-name">{venue.name}</p>
@@ -403,7 +360,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section reveal">
+      <section className="section">
         <HeartDivider />
         <h2 className="section-heading">마음 전하실 곳</h2>
         <div className="accounts">
@@ -416,7 +373,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section reveal">
+      <section className="section">
         <HeartDivider />
         <h2 className="section-heading">연락하기</h2>
         <div className="contact-row">
@@ -437,7 +394,7 @@ export default function App() {
         </div>
       </section>
 
-      <div className="closing-band reveal">
+      <div className="closing-band">
         <img src={photos.closing} alt="" loading="lazy" />
         <div className="closing-band-overlay">
           <p className="closing-band-text">함께해주신 모든 분들께 감사드립니다.</p>

@@ -1,6 +1,8 @@
 // ─────────────────────────────────────────────
 // 청첩장 정보는 이 파일만 수정하면 됩니다.
 // ─────────────────────────────────────────────
+import heroPhoto from './assets/photos/hero.png'
+
 export const WEDDING = {
   groom: {
     name: '창현',
@@ -42,21 +44,20 @@ export const WEDDING = {
     ],
   },
   greeting: [
+    '자란 곳도, 하는 일도, 살아온 시간도 달랐지만',
     '함께 있으면 신기할 만큼 잘 맞는 우리는',
-    '오래오래 함께하고 싶어 결혼합니다♥',
+    '이대로 오래오래 함께하고 싶어 결혼합니다♥',
     '가을이 깊어가는 11월의 첫 주말,',
-    '저희의 가장 설레는 하루를 함께해 주세요!',
+    '저희의 가장 설레는 하루를 함께해 주세요.',
   ],
   account: {
     groom: [{ holder: '창현', bank: '○○은행 000-0000-0000' }],
     bride: [{ holder: '지수', bank: '○○은행 000-0000-0000' }],
   },
-  // 임시 플레이스홀더 사진입니다 (디자인 참고 사이트의 샘플 사진). 실제 사진이 준비되면
-  // public/photos/ 에 넣고 아래 경로를 '/photos/파일명.jpg' 형태로 바꾸면 됩니다.
+  // 히어로 사진은 실제 커플 사진(src/assets/photos/hero.png)을 사용합니다.
+  // 그 외는 임시 플레이스홀더 사진입니다 (디자인 참고 사이트의 샘플 사진).
   photos: {
-    hero: 'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1784879058516-0b4879c3-631b-45f2-aca1-70e1c750673e.webp',
-    polaroid:
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200233808-8c660480-47da-44f8-9cd7-3e9c6f1784bd.webp',
+    hero: heroPhoto,
     gallery: [
       'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200077131-6d788e28-2.webp',
       'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200082500-3f9ec167-3.webp',
