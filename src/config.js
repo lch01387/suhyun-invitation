@@ -6,13 +6,13 @@ export const WEDDING = {
     name: '창현',
     nameEn: 'CHANGHYUN',
     parents: '이봉규 · 김인숙의 장남',
-    phone: '010-0000-0000',
+    phone: '010-3614-3258',
   },
   bride: {
     name: '지수',
     nameEn: 'JISU',
     parents: '하행진 · 김정남의 장녀',
-    phone: '010-0000-0000',
+    phone: '010-4634-6851',
   },
   // 예식 일시 (연, 월, 일, 시, 분) — 월은 1~12 그대로 적으면 됩니다.
   date: { year: 2026, month: 11, day: 7, hour: 12, minute: 30 },
@@ -24,8 +24,10 @@ export const WEDDING = {
     mapUrl: 'https://map.naver.com/p/entry/place/1909737461',
     // 네이버 클라우드 플랫폼 > Maps > Application의 Client ID(ncpKeyId).
     // Web 서비스 URL에 http://localhost:5173 과 https://lch01387.github.io 를 등록해야 합니다.
-    // (Client Secret은 서버용이므로 여기에 넣지 말 것)
-    mapClientId: 'emchkxaian',
+    // 값은 하드코딩하지 않고 VITE_NAVER_MAP_CLIENT_ID 환경변수로 주입합니다.
+    // (로컬 개발: .env.local, 배포: GitHub Actions secret NAVER_MAP_API_ID)
+    // Client Secret(NAVER_MAP_API_KEY)은 서버용이라 프론트엔드 번들에는 넣지 않습니다.
+    mapClientId: import.meta.env.VITE_NAVER_MAP_CLIENT_ID,
     transit: [
       {
         icon: '🚈',
@@ -48,6 +50,23 @@ export const WEDDING = {
   account: {
     groom: [{ holder: '창현', bank: '○○은행 000-0000-0000' }],
     bride: [{ holder: '지수', bank: '○○은행 000-0000-0000' }],
+  },
+  // 임시 플레이스홀더 사진입니다 (디자인 참고 사이트의 샘플 사진). 실제 사진이 준비되면
+  // public/photos/ 에 넣고 아래 경로를 '/photos/파일명.jpg' 형태로 바꾸면 됩니다.
+  photos: {
+    hero: 'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1784879058516-0b4879c3-631b-45f2-aca1-70e1c750673e.webp',
+    polaroid:
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200233808-8c660480-47da-44f8-9cd7-3e9c6f1784bd.webp',
+    gallery: [
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200077131-6d788e28-2.webp',
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200082500-3f9ec167-3.webp',
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200080444-c5f46512-0.webp',
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200074703-e2d35f9b-0.webp',
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200076374-88fe49bf-1.webp',
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200077848-9e0adb26-3.webp',
+    ],
+    closing:
+      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782199868896-c2089b67.webp',
   },
 }
 

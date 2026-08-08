@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
@@ -24,6 +24,27 @@ function Clover({ size = 24, className = '' }) {
   )
 }
 
+function Heart({ size = 15, className = '' }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} className={className} aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.429-6.381 12-11.147 12-15.808 0-6.769-8.852-8.346-12-2.944z"
+      />
+    </svg>
+  )
+}
+
+function HeartDivider() {
+  return (
+    <div className="heart-divider">
+      <Heart className="heart-mint" />
+      <Heart className="heart-coral" />
+      <Heart className="heart-mint" />
+    </div>
+  )
+}
+
 function pad(n) {
   return String(n).padStart(2, '0')
 }
@@ -34,6 +55,14 @@ function formatDate() {
   const hour12 = d.getHours() % 12 || 12
   const minute = d.getMinutes() ? ` ${d.getMinutes()}분` : ''
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${DAYS[d.getDay()]}요일 ${ampm} ${hour12}시${minute}`
+}
+
+function formatDayTime() {
+  const d = weddingDate()
+  const ampm = d.getHours() < 12 ? '오전' : '오후'
+  const hour12 = d.getHours() % 12 || 12
+  const minute = d.getMinutes() ? ` ${d.getMinutes()}분` : ''
+  return `${DAYS[d.getDay()]}요일 ${ampm} ${hour12}시${minute}`
 }
 
 // 스크롤 시 카드가 아래에서 떠오르는 애니메이션
@@ -90,29 +119,45 @@ function Countdown() {
   const seconds = Math.floor((diff % 60000) / 1000)
 
   return (
-    <div className="countdown">
-      {[
-        [days, 'DAYS'],
-        [hours, 'HOURS'],
-        [minutes, 'MIN'],
-        [seconds, 'SEC'],
-      ].map(([value, label]) => (
-        <div className="countdown-item" key={label}>
-          <span className="countdown-value">{value}</span>
-          <span className="countdown-label">{label}</span>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="countdown">
+        {[
+          [days, 'DAYS'],
+          [hours, 'HOUR'],
+          [minutes, 'MIN'],
+          [seconds, 'SEC'],
+        ].map(([value, label], i) => (
+          <Fragment key={label}>
+            {i > 0 && <span className="countdown-sep">:</span>}
+            <div className="countdown-item">
+              <span className="countdown-value">{value}</span>
+              <span className="countdown-label">{label}</span>
+            </div>
+          </Fragment>
+        ))}
+      </div>
+      <p className="countdown-summary">
+        {WEDDING.groom.name} <Heart size={11} className="heart-coral" /> {WEDDING.bride.name}의 결혼식이{' '}
+        <strong>{days}일</strong> 남았습니다.
+      </p>
+    </>
   )
 }
 
 function Calendar() {
   const d = weddingDate()
-  const first = new Date(d.getFullYear(), d.getMonth(), 1)
-  const last = new Date(d.getFullYear(), d.getMonth() + 1, 0)
+  const year = d.getFullYear()
+  const month = d.getMonth()
+  const leading = new Date(year, month, 1).getDay()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const daysInPrevMonth = new Date(year, month, 0).getDate()
+  const totalCells = Math.ceil((leading + daysInMonth) / 7) * 7
+  const trailing = totalCells - leading - daysInMonth
+
   const cells = [
-    ...Array(first.getDay()).fill(null),
-    ...Array.from({ length: last.getDate() }, (_, i) => i + 1),
+    ...Array.from({ length: leading }, (_, i) => ({ day: daysInPrevMonth - leading + i + 1, current: false })),
+    ...Array.from({ length: daysInMonth }, (_, i) => ({ day: i + 1, current: true })),
+    ...Array.from({ length: trailing }, (_, i) => ({ day: i + 1, current: false })),
   ]
 
   return (
@@ -123,21 +168,18 @@ function Calendar() {
             {day}
           </div>
         ))}
-        {cells.map((day, i) => (
-          <div
-            className={
-              day === d.getDate()
-                ? 'calendar-day wedding-day'
-                : i % 7 === 0
-                  ? 'calendar-day sunday'
-                  : 'calendar-day'
-            }
-            key={i}
-          >
-            {day === d.getDate() && <Clover size={38} className="wedding-clover" />}
-            <span>{day}</span>
-          </div>
-        ))}
+        {cells.map((cell, i) => {
+          const isWeddingDay = cell.current && cell.day === d.getDate()
+          const classes = ['calendar-day']
+          if (!cell.current) classes.push('muted')
+          else if (i % 7 === 0) classes.push('sunday')
+          if (isWeddingDay) classes.push('wedding-day')
+          return (
+            <div className={classes.join(' ')} key={i}>
+              <span>{cell.day}</span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -185,10 +227,49 @@ function NaverMap() {
   return <div className="map-embed" ref={mapRef} />
 }
 
-function AccountCard({ side, entries }) {
+function Polaroid({ src }) {
   return (
-    <div className="account-card">
-      <span className="account-tag">{side}</span>
+    <section className="polaroid-section reveal">
+      <div className="polaroid-card">
+        <img src={src} alt="" loading="lazy" />
+        <span className="polaroid-caption hand">We're getting married!</span>
+      </div>
+    </section>
+  )
+}
+
+function Gallery({ photos }) {
+  return (
+    <section className="section reveal">
+      <HeartDivider />
+      <h2 className="section-heading">웨딩 갤러리</h2>
+      <div className="gallery-grid">
+        {photos.map((src, i) => (
+          <div className="gallery-photo" key={i}>
+            <img src={src} alt="" loading="lazy" />
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function Accordion({ title, children, defaultOpen = true }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="accordion">
+      <button type="button" className="accordion-header" onClick={() => setOpen((v) => !v)}>
+        {title}
+        <span className={open ? 'accordion-chevron open' : 'accordion-chevron'}>▾</span>
+      </button>
+      {open && <div className="accordion-body">{children}</div>}
+    </div>
+  )
+}
+
+function AccountRows({ entries }) {
+  return (
+    <>
       {entries.map((entry) => (
         <div className="account-row" key={entry.holder}>
           <div className="account-info">
@@ -196,40 +277,45 @@ function AccountCard({ side, entries }) {
             <p className="account-holder">{entry.holder}</p>
           </div>
           <CopyButton className="pill-button" text={`${entry.bank} ${entry.holder}`}>
-            복사
+            복사하기
           </CopyButton>
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
 export default function App() {
   useReveal()
-  const { groom, bride, venue, greeting, account } = WEDDING
+  const { groom, bride, venue, greeting, account, photos } = WEDDING
   const d = weddingDate()
 
   return (
     <div className="invitation">
-      <header className="card hero reveal">
-        <p className="overline">WEDDING INVITATION</p>
-        <div className="hero-date-big">
-          {pad(d.getMonth() + 1)}
-          <Clover size={34} className="hero-date-clover" />
-          {pad(d.getDate())}
+      <header className="hero-photo reveal">
+        <img className="hero-bg" src={photos.hero} alt="" />
+        <div className="hero-overlay" />
+        <Heart size={22} className="hero-heart hero-heart-1" />
+        <Heart size={18} className="hero-heart hero-heart-2" />
+        <Heart size={20} className="hero-heart hero-heart-3" />
+        <div className="hero-names-en">
+          <span>{groom.nameEn}</span>
+          <span className="hero-and">and</span>
+          <span>{bride.nameEn}</span>
         </div>
-        <h1 className="hero-names">
-          {groom.name} <span className="hero-amp">&</span> {bride.name}
+        <p className="hero-date-vertical">
+          {d.getFullYear()}.{pad(d.getMonth() + 1)}.{pad(d.getDate())}
+        </p>
+        <h1 className="hero-script hand">
+          {groom.name}
+          <span className="hero-script-amp">&amp;</span>
+          {bride.name}
         </h1>
-        <p className="hero-script hand">평생 함께 할 사람을 만났습니다</p>
-        <div className="hero-meta">
-          <p>{formatDate()}</p>
-          <p>{venue.name}</p>
-        </div>
       </header>
 
-      <section className="card reveal">
-        <h2 className="section-heading">모시는 글</h2>
+      <section className="section reveal">
+        <HeartDivider />
+        <h2 className="section-heading">초대합니다</h2>
         <div className="greeting">
           {greeting.map((line, i) =>
             line ? (
@@ -256,15 +342,23 @@ export default function App() {
         </div>
       </section>
 
-      <section className="card reveal">
-        <h2 className="section-heading">예식 안내</h2>
-        <p className="schedule-date">{formatDate()}</p>
+      <Polaroid src={photos.polaroid} />
+
+      <section className="section schedule-section reveal">
+        <HeartDivider />
+        <p className="schedule-big-date">
+          {pad(d.getMonth() + 1)} / {pad(d.getDate())}
+        </p>
+        <p className="schedule-date">{formatDayTime()}</p>
         <Calendar />
         <Countdown />
       </section>
 
-      <section className="card reveal">
-        <h2 className="section-heading">오시는 길</h2>
+      <Gallery photos={photos.gallery} />
+
+      <section className="section reveal">
+        <HeartDivider />
+        <h2 className="section-heading">식장 위치</h2>
         <p className="venue-name">{venue.name}</p>
         <p className="venue-address">{venue.address}</p>
         <NaverMap />
@@ -309,11 +403,26 @@ export default function App() {
         </div>
       </section>
 
-      <section className="card reveal">
+      <section className="section reveal">
+        <HeartDivider />
+        <h2 className="section-heading">마음 전하실 곳</h2>
+        <div className="accounts">
+          <Accordion title="신랑측 계좌번호">
+            <AccountRows entries={account.groom} />
+          </Accordion>
+          <Accordion title="신부측 계좌번호">
+            <AccountRows entries={account.bride} />
+          </Accordion>
+        </div>
+      </section>
+
+      <section className="section reveal">
+        <HeartDivider />
         <h2 className="section-heading">연락하기</h2>
         <div className="contact-row">
           <span className="contact-role">신랑</span>
           <span className="contact-name">{groom.name}</span>
+          <span className="contact-phone">{groom.phone}</span>
           <a className="pill-button" href={`tel:${groom.phone}`}>
             전화하기
           </a>
@@ -321,19 +430,19 @@ export default function App() {
         <div className="contact-row">
           <span className="contact-role">신부</span>
           <span className="contact-name">{bride.name}</span>
+          <span className="contact-phone">{bride.phone}</span>
           <a className="pill-button" href={`tel:${bride.phone}`}>
             전화하기
           </a>
         </div>
       </section>
 
-      <section className="card reveal">
-        <h2 className="section-heading">마음 전하실 곳</h2>
-        <div className="accounts">
-          <AccountCard side="신랑 측" entries={account.groom} />
-          <AccountCard side="신부 측" entries={account.bride} />
+      <div className="closing-band reveal">
+        <img src={photos.closing} alt="" loading="lazy" />
+        <div className="closing-band-overlay">
+          <p className="closing-band-text">함께해주신 모든 분들께 감사드립니다.</p>
         </div>
-      </section>
+      </div>
 
       <footer className="footer">
         {groom.name} <Clover size={15} className="inline-clover" /> {bride.name}

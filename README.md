@@ -34,4 +34,9 @@ GitHub Pages는 `https://<user>.github.io/suhyun-invitation/` 하위 경로로 �
 
 ## 네이버 지도 API
 
-지도 임베드는 네이버 클라우드 플랫폼(NCP) Maps API를 사용합니다. Client ID(`ncpKeyId`)는 `src/config.js`의 `venue.mapClientId`에 설정되어 있으며, NCP Maps 애플리케이션의 Web 서비스 URL에 `http://localhost:5173`과 `https://lch01387.github.io`가 등록되어 있어야 정상 동작합니다. 관련 문서 및 secret 정보는 [CLAUDE.md](./CLAUDE.md)를 참고하세요.
+지도 임베드는 네이버 클라우드 플랫폼(NCP) Maps API를 사용합니다. Client ID(`ncpKeyId`)는 코드에 하드코딩하지 않고 `VITE_NAVER_MAP_CLIENT_ID` 환경변수로 주입해 `src/config.js`의 `venue.mapClientId`에서 읽습니다.
+
+- **로컬 개발**: `.env.example`을 `.env.local`로 복사한 뒤 값을 채우세요. `.env.local`은 git에 커밋되지 않습니다.
+- **배포**: GitHub Actions repo secret `NAVER_MAP_API_ID`를 `.github/workflows/deploy.yml` 빌드 단계에서 `VITE_NAVER_MAP_CLIENT_ID`로 주입합니다.
+
+NCP Maps 애플리케이션의 Web 서비스 URL에는 `http://localhost:5173`과 `https://lch01387.github.io`가 등록되어 있어야 정상 동작합니다. 관련 문서 및 secret 상세 정보는 [CLAUDE.md](./CLAUDE.md)를 참고하세요.
