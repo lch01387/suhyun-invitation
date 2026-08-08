@@ -68,11 +68,8 @@ body {
 
 .invite-block {
   padding: 44px 26px 40px;
-  background-color: #161512;
-  background-image: url('./assets/textures/black-paper.png');
-  background-repeat: repeat;
-  background-size: 430px auto;
-  color: #f2efe8;
+  background: var(--card);
+  color: var(--ink);
 }
 
 /* ── Heart divider ──────────────── */
@@ -100,13 +97,6 @@ body {
   color: var(--ink);
   text-align: center;
   margin-bottom: 32px;
-}
-
-.section-heading-invert {
-  color: #fdfbf6;
-  font-family: 'GriunAhyoung', cursive;
-  font-weight: normal;
-  font-size: 1.7rem;
 }
 
 /* ── Hero (photo) ───────────────── */
@@ -161,7 +151,7 @@ body {
 }
 
 .invite-block .greeting p {
-  color: rgba(245, 242, 235, 0.88);
+  color: var(--ink);
   font-family: 'GriunAhyoung', cursive;
   font-size: 1.15rem;
   line-height: 1.9;
@@ -171,15 +161,18 @@ body {
   font-size: 0.72em;
   vertical-align: 1px;
   margin-left: 1px;
-}
-
-.invite-block .small-heart {
   color: var(--coral);
 }
 
+.parents-divider {
+  width: 1px;
+  height: 58px;
+  margin: 6px auto 34px;
+  background: var(--line);
+}
+
 .parents {
-  padding: 36px 26px 44px;
-  border-top: 1px solid var(--line);
+  padding: 0 26px 44px;
   text-align: center;
   font-size: 0.88rem;
   line-height: 2.1;
@@ -191,6 +184,11 @@ body {
   color: var(--ink);
   font-weight: 700;
   margin-left: 6px;
+}
+
+.parents-relation {
+  color: var(--ink-soft);
+  margin: 0 2px;
 }
 
 /* ── Schedule / Calendar ────────── */

@@ -208,6 +208,20 @@ function NaverMap() {
   return <div className="map-embed" ref={mapRef} />
 }
 
+function ParentsLine({ text, name, flowerBeforeMother }) {
+  const [father, motherAndRelation] = text.split('·').map((s) => s.trim())
+  const match = motherAndRelation.match(/^(.*?)(의\s*(?:장남|장녀))$/)
+  const mother = match ? match[1] : motherAndRelation
+  const relation = match ? match[2] : ''
+  return (
+    <p>
+      {father} ·{flowerBeforeMother ? ' 🌼 ' : ' '}
+      {mother}
+      <span className="parents-relation">{relation}</span> <strong>{name}</strong>
+    </p>
+  )
+}
+
 function Gallery({ photos }) {
   return (
     <section className="section">
@@ -273,7 +287,7 @@ export default function App() {
       <section className="greeting-section">
         <div className="invite-block">
           <HeartDivider />
-          <h2 className="section-heading section-heading-invert">초대합니다</h2>
+          <h2 className="section-heading">초대합니다</h2>
           <div className="greeting">
             {greeting.map((line, i) =>
               line ? (
@@ -291,13 +305,10 @@ export default function App() {
             )}
           </div>
         </div>
+        <div className="parents-divider" />
         <div className="parents">
-          <p>
-            {groom.parents} <strong>{groom.name}</strong>
-          </p>
-          <p>
-            {bride.parents} <strong>{bride.name}</strong>
-          </p>
+          <ParentsLine text={groom.parents} name={groom.name} />
+          <ParentsLine text={bride.parents} name={bride.name} flowerBeforeMother />
         </div>
       </section>
 
