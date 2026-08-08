@@ -136,7 +136,7 @@ body {
   line-height: 1.9;
 }
 
-.hero-venue-name {
+.hero-info .hero-venue-name {
   font-family: 'GriunAhyoung', cursive;
   font-size: 1.7rem;
   font-weight: normal;
