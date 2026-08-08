@@ -1,14 +1,22 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
 import letterImg from './assets/decor/letter.png'
+import raccoonImg from './assets/decor/raccoon.png'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
-function Clover({ size = 24, className = '' }) {
+function Clover({ size = 24, className = '', style }) {
   const petal =
     'M0 0 C-1.8 -5 -11 -6.2 -11 -12.6 C-11 -17 -7.6 -19.8 -4 -19.8 C-1.6 -19.8 0 -18 0 -18 C0 -18 1.6 -19.8 4 -19.8 C7.6 -19.8 11 -17 11 -12.6 C11 -6.2 1.8 -5 0 0 Z'
   return (
-    <svg viewBox="0 0 48 52" width={size} height={(size * 52) / 48} className={className} aria-hidden="true">
+    <svg
+      viewBox="0 0 48 52"
+      width={size}
+      height={(size * 52) / 48}
+      className={className}
+      style={style}
+      aria-hidden="true"
+    >
       <g fill="currentColor">
         {[45, 135, 225, 315].map((deg) => (
           <path key={deg} d={petal} transform={`translate(24 24) rotate(${deg})`} />
@@ -223,17 +231,23 @@ function ParentsLine({ text, name }) {
 }
 
 function Gallery({ photos }) {
+  const [active, setActive] = useState(null)
   return (
     <section className="section">
       <HeartDivider />
       <h2 className="section-heading">웨딩 갤러리</h2>
       <div className="gallery-grid">
         {photos.map((src, i) => (
-          <div className="gallery-photo" key={i}>
+          <button type="button" className="gallery-photo" key={i} onClick={() => setActive(src)}>
             <img src={src} alt="" loading="lazy" />
-          </div>
+          </button>
         ))}
       </div>
+      {active && (
+        <div className="lightbox" onClick={() => setActive(null)}>
+          <img src={active} alt="" />
+        </div>
+      )}
     </section>
   )
 }
@@ -269,6 +283,71 @@ function AccountRows({ entries }) {
   )
 }
 
+const BURST_EMOJI = ['🍀', '🎂']
+
+function makeCloverBurst() {
+  const count = 10 + Math.floor(Math.random() * 7)
+  return Array.from({ length: count }, () => {
+    const angle = Math.random() * 2 * Math.PI
+    const distance = 50 + Math.random() * 130
+    const dx = distance * Math.cos(angle)
+    const dy = distance * Math.sin(angle)
+    return {
+      id: `${Date.now()}-${Math.random()}`,
+      emoji: BURST_EMOJI[Math.floor(Math.random() * BURST_EMOJI.length)],
+      dx,
+      dy,
+      size: 16 + Math.random() * 14,
+      rotate: Math.random() * 360 - 180,
+      delay: Math.random() * 0.15,
+      duration: 0.7 + Math.random() * 0.5,
+    }
+  })
+}
+
+function ClosingRaccoon({ src }) {
+  const [bursts, setBursts] = useState([])
+
+  const handleClick = () => {
+    const id = `${Date.now()}-${Math.random()}`
+    setBursts((prev) => [...prev, { id, particles: makeCloverBurst() }])
+    setTimeout(() => {
+      setBursts((prev) => prev.filter((b) => b.id !== id))
+    }, 1500)
+  }
+
+  return (
+    <div className="closing-raccoon">
+      <div className="raccoon-stage">
+        <div className="clover-burst" aria-hidden="true">
+          {bursts.map((burst) =>
+            burst.particles.map((p) => (
+              <span
+                key={p.id}
+                className="clover-particle"
+                style={{
+                  fontSize: `${p.size}px`,
+                  '--dx': `${p.dx}px`,
+                  '--dy': `${p.dy}px`,
+                  '--rot': `${p.rotate}deg`,
+                  animationDelay: `${p.delay}s`,
+                  animationDuration: `${p.duration}s`,
+                }}
+              >
+                {p.emoji}
+              </span>
+            )),
+          )}
+        </div>
+        <button type="button" className="raccoon-button" onClick={handleClick}>
+          <img src={src} alt="" />
+        </button>
+      </div>
+      <p className="raccoon-caption">행운을 가져다주는 바위너구리</p>
+    </div>
+  )
+}
+
 export default function App() {
   const { groom, bride, venue, greeting, account, photos } = WEDDING
   const d = weddingDate()
@@ -278,7 +357,6 @@ export default function App() {
       <header className="hero-photo">
         <img className="hero-bg" src={photos.hero} alt="" />
         <div className="hero-info">
-          <HeartDivider />
           <p className="hero-venue-name">{venue.name}</p>
           <p>{formatDate()}</p>
         </div>
@@ -312,7 +390,6 @@ export default function App() {
       </section>
 
       <section className="section schedule-section">
-        <HeartDivider />
         <p className="schedule-big-date">
           {pad(d.getMonth() + 1)} / {pad(d.getDate())}
         </p>
@@ -374,10 +451,10 @@ export default function App() {
         <HeartDivider />
         <h2 className="section-heading">마음 전하실 곳</h2>
         <div className="accounts">
-          <Accordion title="신랑측 계좌번호">
+          <Accordion title="신랑" defaultOpen={false}>
             <AccountRows entries={account.groom} />
           </Accordion>
-          <Accordion title="신부측 계좌번호">
+          <Accordion title="신부" defaultOpen={false}>
             <AccountRows entries={account.bride} />
           </Accordion>
         </div>
@@ -404,12 +481,7 @@ export default function App() {
         </div>
       </section>
 
-      <div className="closing-band">
-        <img src={photos.closing} alt="" loading="lazy" />
-        <div className="closing-band-overlay">
-          <p className="closing-band-text">함께해주신 모든 분들께 감사드립니다.</p>
-        </div>
-      </div>
+      <ClosingRaccoon src={raccoonImg} />
 
       <footer className="footer">
         {groom.name} <Clover size={15} className="inline-clover" /> {bride.name}

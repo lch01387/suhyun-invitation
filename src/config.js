@@ -53,8 +53,8 @@ export const WEDDING = {
     '저희의 가장 설레는 하루를 함께해 주세요.',
   ],
   account: {
-    groom: [{ holder: '창현', bank: '○○은행 000-0000-0000' }],
-    bride: [{ holder: '지수', bank: '○○은행 000-0000-0000' }],
+    groom: [{ holder: '이창현', bank: '○○은행 000-0000-0000' }],
+    bride: [{ holder: '하지수', bank: '○○은행 000-0000-0000' }],
   },
   // 히어로 사진은 실제 커플 사진(src/assets/photos/hero.png)을 사용합니다.
   // 그 외는 임시 플레이스홀더 사진입니다 (디자인 참고 사이트의 샘플 사진).
@@ -68,8 +68,6 @@ export const WEDDING = {
       'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200076374-88fe49bf-1.webp',
       'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200077848-9e0adb26-3.webp',
     ],
-    closing:
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782199868896-c2089b67.webp',
   },
 }
 
