@@ -38,7 +38,7 @@ html {
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: var(--card);
+  background: var(--page-bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -111,6 +111,7 @@ body {
 
 /* ── Hero (photo) ───────────────── */
 .hero-photo {
+  position: relative;
   background: #fff;
 }
 
@@ -121,7 +122,11 @@ body {
 }
 
 .hero-info {
-  padding: 22px 26px 36px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 72%;
+  padding: 0 26px;
   text-align: center;
   color: var(--ink);
 }
