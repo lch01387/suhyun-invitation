@@ -2,7 +2,7 @@
   --page-bg: #000000;
   --bg: #f5f3ee;
   --card: #ffffff;
-  --ink: #2b2b28;
+  --ink: #333333;
   --ink-soft: #96968f;
   --ink-faint: #d6d2c6;
   --line: #ececea;
@@ -38,7 +38,7 @@ html {
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: var(--page-bg);
+  background: var(--card);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -129,6 +129,14 @@ body {
 .hero-info p {
   font-size: 0.92rem;
   line-height: 1.9;
+}
+
+.hero-venue-name {
+  font-family: 'GriunAhyoung', cursive;
+  font-size: 1.7rem;
+  font-weight: normal;
+  color: var(--ink);
+  margin-bottom: 4px;
 }
 
 /* ── Greeting ───────────────────── */

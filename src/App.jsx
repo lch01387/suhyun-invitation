@@ -265,7 +265,7 @@ export default function App() {
         <img className="hero-bg" src={photos.hero} alt="" />
         <div className="hero-info">
           <HeartDivider />
-          <p>{venue.name}</p>
+          <p className="hero-venue-name">{venue.name}</p>
           <p>{formatDate()}</p>
         </div>
       </header>
