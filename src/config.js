@@ -6,12 +6,14 @@ import heroPhoto from './assets/photos/hero.png'
 export const WEDDING = {
   groom: {
     name: '창현',
+    fullName: '이창현',
     nameEn: 'CHANGHYUN',
     parents: '이봉규 · 김인숙의 장남',
     phone: '010-3614-3258',
   },
   bride: {
     name: '지수',
+    fullName: '하지수',
     nameEn: 'JISU',
     parents: '하행진 · 김정남의 장녀',
     phone: '010-4634-6851',

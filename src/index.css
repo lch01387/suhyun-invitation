@@ -67,9 +67,16 @@ body {
 }
 
 .invite-block {
-  padding: 44px 26px 40px;
+  padding: 40px 26px 40px;
   background: var(--card);
   color: var(--ink);
+}
+
+.invite-letter {
+  display: block;
+  width: 84px;
+  height: auto;
+  margin: 0 auto 30px;
 }
 
 /* ── Heart divider ──────────────── */
@@ -168,7 +175,7 @@ body {
   width: 1px;
   height: 58px;
   margin: 6px auto 34px;
-  background: var(--line);
+  background: var(--ink-soft);
 }
 
 .parents {

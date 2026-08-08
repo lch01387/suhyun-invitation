@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
+import letterImg from './assets/decor/letter.png'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -208,15 +209,14 @@ function NaverMap() {
   return <div className="map-embed" ref={mapRef} />
 }
 
-function ParentsLine({ text, name, flowerBeforeMother }) {
+function ParentsLine({ text, name }) {
   const [father, motherAndRelation] = text.split('·').map((s) => s.trim())
   const match = motherAndRelation.match(/^(.*?)(의\s*(?:장남|장녀))$/)
   const mother = match ? match[1] : motherAndRelation
   const relation = match ? match[2] : ''
   return (
     <p>
-      {father} ·{flowerBeforeMother ? ' 🌼 ' : ' '}
-      {mother}
+      {father} · {mother}
       <span className="parents-relation">{relation}</span> <strong>{name}</strong>
     </p>
   )
@@ -286,8 +286,7 @@ export default function App() {
 
       <section className="greeting-section">
         <div className="invite-block">
-          <HeartDivider />
-          <h2 className="section-heading">초대합니다</h2>
+          <img className="invite-letter" src={letterImg} alt="" />
           <div className="greeting">
             {greeting.map((line, i) =>
               line ? (
@@ -307,8 +306,8 @@ export default function App() {
         </div>
         <div className="parents-divider" />
         <div className="parents">
-          <ParentsLine text={groom.parents} name={groom.name} />
-          <ParentsLine text={bride.parents} name={bride.name} flowerBeforeMother />
+          <ParentsLine text={groom.parents} name={groom.fullName} />
+          <ParentsLine text={bride.parents} name={bride.fullName} />
         </div>
       </section>
 
