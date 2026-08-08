@@ -307,8 +307,28 @@ function makeCloverBurst() {
 
 function ClosingRaccoon({ src }) {
   const [bursts, setBursts] = useState([])
+  const imgRef = useRef(null)
+  const canvasRef = useRef(null)
 
-  const handleClick = () => {
+  const isOpaqueAt = (clientX, clientY) => {
+    const img = imgRef.current
+    if (!img) return true
+    if (!canvasRef.current) {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      canvas.getContext('2d').drawImage(img, 0, 0)
+      canvasRef.current = canvas
+    }
+    const rect = img.getBoundingClientRect()
+    const x = Math.floor(((clientX - rect.left) / rect.width) * img.naturalWidth)
+    const y = Math.floor(((clientY - rect.top) / rect.height) * img.naturalHeight)
+    const alpha = canvasRef.current.getContext('2d').getImageData(x, y, 1, 1).data[3]
+    return alpha > 20
+  }
+
+  const handleClick = (e) => {
+    if (!isOpaqueAt(e.clientX, e.clientY)) return
     const id = `${Date.now()}-${Math.random()}`
     setBursts((prev) => [...prev, { id, particles: makeCloverBurst() }])
     setTimeout(() => {
@@ -340,7 +360,7 @@ function ClosingRaccoon({ src }) {
           )}
         </div>
         <button type="button" className="raccoon-button" onClick={handleClick}>
-          <img src={src} alt="" />
+          <img ref={imgRef} src={src} alt="" />
         </button>
       </div>
       <p className="raccoon-caption">행운을 가져다주는 바위너구리</p>

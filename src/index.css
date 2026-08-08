@@ -620,7 +620,7 @@ body {
 
 /* ── Closing raccoon ────────────── */
 .closing-raccoon {
-  padding: 24px 26px;
+  padding: 8px 26px;
   text-align: center;
   background: var(--card);
 }
@@ -638,6 +638,8 @@ body {
   border: none;
   padding: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .raccoon-button img {
@@ -692,7 +694,7 @@ body {
 
 /* ── Footer ─────────────────────── */
 .footer {
-  padding: 36px 24px 40px;
+  padding: 14px 24px 40px;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 600;
