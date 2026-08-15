@@ -1,5 +1,13 @@
 # invitation 프로젝트 정보
 
+## 개발·배포 방식
+- **변경 명령을 받으면 로컬에만 반영한다.** dev 서버(`npm run dev`, http://localhost:5173/suhyun-invitation/)와 브라우저로 검증 후 보고하고, 커밋/푸시는 하지 않는다.
+- **"배포하라" 명령 시 main에 커밋/푸시한다.** GitHub Actions(`deploy.yml`)가 두 벌을 함께 배포한다:
+  - 사이트 루트 `https://lch01387.github.io/suhyun-invitation/` — **최신 릴리즈 태그(v*)** 시점 코드. 네이버 QR이 이 주소를 가리키므로 사용자에게는 항상 릴리즈된 버전만 보인다.
+  - `/dev/` 경로 `https://lch01387.github.io/suhyun-invitation/dev/` — **main 최신 커밋**. 모바일 확인용. 즉, 배포 명령은 사실상 /dev/만 갱신한다.
+- **릴리즈 발행(예: v1.1)은 별도의 명시적 지시가 있을 때만** 한다. 발행하면 다음 배포부터 루트가 그 버전으로 교체된다.
+- 배포 상태 확인: `GH_HOST=github.com gh run list --repo lch01387/suhyun-invitation` (기본 GH_HOST가 사내 호스트로 설정되어 있어 오버라이드 필요).
+
 ## 네이버 지도 API
 - API 문서: https://api.ncloud-docs.com/docs/ai-application-service-apigateway
 - GitHub Actions repo secret로 아래 두 개가 등록되어 있음:

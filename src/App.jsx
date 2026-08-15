@@ -1,6 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
-import letterImg from './assets/decor/letter.png'
 import raccoonImg from './assets/decor/raccoon.png'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
@@ -58,23 +57,38 @@ function pad(n) {
   return String(n).padStart(2, '0')
 }
 
-function formatDate() {
+const EN_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const EN_MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
+function formatFullKo() {
   const d = weddingDate()
   const ampm = d.getHours() < 12 ? '오전' : '오후'
   const hour12 = d.getHours() % 12 || 12
   const minute = d.getMinutes() ? ` ${d.getMinutes()}분` : ''
-  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${DAYS[d.getDay()]}요일 ${ampm} ${hour12}시${minute}`
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${DAYS[d.getDay()]}요일 | ${ampm} ${hour12}시${minute}`
 }
 
-function formatDayTime() {
+function formatFullEn() {
   const d = weddingDate()
-  const ampm = d.getHours() < 12 ? '오전' : '오후'
+  const ampm = d.getHours() < 12 ? 'AM' : 'PM'
   const hour12 = d.getHours() % 12 || 12
-  const minute = d.getMinutes() ? ` ${d.getMinutes()}분` : ''
-  return `${DAYS[d.getDay()]}요일 ${ampm} ${hour12}시${minute}`
+  return `${EN_DAYS[d.getDay()]}, ${EN_MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} | ${ampm} ${hour12}:${pad(d.getMinutes())}`
 }
 
-function CopyButton({ text, className = '', children }) {
+function CopyButton({ text, className = '', children, copiedChildren = '복사됐어요 🍀', ...rest }) {
   const [copied, setCopied] = useState(false)
   const onClick = async () => {
     try {
@@ -86,10 +100,96 @@ function CopyButton({ text, className = '', children }) {
     }
   }
   return (
-    <button type="button" className={className} onClick={onClick}>
-      {copied ? '복사됐어요 🍀' : children}
+    <button type="button" className={className} onClick={onClick} {...rest}>
+      {copied ? copiedChildren : children}
     </button>
   )
+}
+
+function CopyIcon({ size = 15 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+      <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M5 15H4.8A1.8 1.8 0 0 1 3 13.2V4.8A1.8 1.8 0 0 1 4.8 3h8.4A1.8 1.8 0 0 1 15 4.8V5"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function CheckIcon({ size = 15 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+      <path
+        d="M4.5 12.5 10 18 19.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function TransitSvg({ children, size = 19 }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  )
+}
+
+function SubwayIcon() {
+  return (
+    <TransitSvg>
+      <path d="M8 3.1V7a4 4 0 0 0 8 0V3.1" />
+      <path d="m9 15-1-1" />
+      <path d="m15 15 1-1" />
+      <path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z" />
+      <path d="m8 19-2 3" />
+      <path d="m16 19 2 3" />
+    </TransitSvg>
+  )
+}
+
+function CarIcon() {
+  return (
+    <TransitSvg>
+      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+      <circle cx="7" cy="17" r="2" />
+      <path d="M9 17h6" />
+      <circle cx="17" cy="17" r="2" />
+    </TransitSvg>
+  )
+}
+
+function ParkingIcon() {
+  return (
+    <TransitSvg>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+    </TransitSvg>
+  )
+}
+
+// config의 transit.icon 키 → 라인 아이콘 (참고 페이지 디자인)
+const TRANSIT_ICONS = {
+  subway: <SubwayIcon />,
+  car: <CarIcon />,
+  parking: <ParkingIcon />,
 }
 
 function Countdown() {
@@ -113,21 +213,18 @@ function Countdown() {
       <div className="countdown">
         {[
           [days, 'DAYS'],
-          [hours, 'HOUR'],
-          [minutes, 'MIN'],
-          [seconds, 'SEC'],
-        ].map(([value, label], i) => (
-          <Fragment key={label}>
-            {i > 0 && <span className="countdown-sep">:</span>}
-            <div className="countdown-item">
-              <span className="countdown-value">{value}</span>
-              <span className="countdown-label">{label}</span>
-            </div>
-          </Fragment>
+          [hours, 'HOURS'],
+          [minutes, 'MINUTES'],
+          [seconds, 'SECONDS'],
+        ].map(([value, label]) => (
+          <div className="countdown-item" key={label}>
+            <span className="countdown-value">{value}</span>
+            <span className="countdown-label">{label}</span>
+          </div>
         ))}
       </div>
       <p className="countdown-summary">
-        {WEDDING.groom.name} <Heart size={11} className="heart-coral" /> {WEDDING.bride.name}의 결혼식이{' '}
+        {WEDDING.groom.name} <Heart size={11} className="heart-ink" /> {WEDDING.bride.name}의 결혼식이{' '}
         <strong>{days}일</strong> 남았습니다.
       </p>
     </>
@@ -159,10 +256,11 @@ function Calendar() {
           </div>
         ))}
         {cells.map((cell, i) => {
-          const isWeddingDay = cell.current && cell.day === d.getDate()
+          // 참고 디자인처럼 이전/다음 달 날짜는 빈 칸으로 둔다
+          if (!cell.current) return <div className="calendar-day" key={i} />
+          const isWeddingDay = cell.day === d.getDate()
           const classes = ['calendar-day']
-          if (!cell.current) classes.push('muted')
-          else if (i % 7 === 0) classes.push('sunday')
+          if (i % 7 === 0) classes.push('sunday')
           if (isWeddingDay) classes.push('wedding-day')
           return (
             <div className={classes.join(' ')} key={i}>
@@ -230,8 +328,31 @@ function ParentsLine({ text, name }) {
   )
 }
 
+function ChevronIcon({ dir = 'left', size = 26 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+      <path
+        d={dir === 'left' ? 'M15 18 9 12l6-6' : 'm9 18 6-6-6-6'}
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function CloseIcon({ size = 22 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+      <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function Gallery({ photos }) {
   const [active, setActive] = useState(null) // 확대 중인 사진의 인덱스 (null이면 닫힘)
+  const touchStartX = useRef(null)
 
   const prev = () => setActive((i) => (i - 1 + photos.length) % photos.length)
   const next = () => setActive((i) => (i + 1) % photos.length)
@@ -244,27 +365,30 @@ function Gallery({ photos }) {
       else if (e.key === 'Escape') setActive(null)
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    // 뷰어가 열려 있는 동안 뒤 페이지 스크롤 잠금
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = prevOverflow
+    }
   }, [active])
 
-  // 사진의 왼쪽 절반 클릭 → 이전, 오른쪽 절반 클릭 → 다음
-  const onImageClick = (e) => {
-    e.stopPropagation()
-    const rect = e.currentTarget.getBoundingClientRect()
-    if (e.clientX - rect.left < rect.width / 2) prev()
-    else next()
+  // 참고 페이지와 동일하게 스와이프로 이전/다음 이동
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
   }
-
-  // 사진 위 커서: 왼쪽 절반은 ←, 오른쪽 절반은 → 모양으로 이동 방향을 표시
-  const onImageMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    e.currentTarget.style.cursor = e.clientX - rect.left < rect.width / 2 ? 'w-resize' : 'e-resize'
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    touchStartX.current = null
+    if (dx > 40) prev()
+    else if (dx < -40) next()
   }
 
   return (
-    <section className="section">
-      <HeartDivider />
-      <h2 className="section-heading">웨딩 갤러리</h2>
+    <section className="section gallery-section">
+      <h2 className="schedule-title">GALLERY</h2>
       <div className="gallery-grid">
         {photos.map((photo, i) => (
           <button type="button" className="gallery-photo" key={i} onClick={() => setActive(i)}>
@@ -273,43 +397,31 @@ function Gallery({ photos }) {
         ))}
       </div>
       {active !== null && (
-        <div className="lightbox" onClick={() => setActive(null)}>
-          <button
-            type="button"
-            className="lightbox-close"
-            aria-label="닫기"
-            onClick={(e) => {
-              e.stopPropagation()
-              setActive(null)
-            }}
-          >
-            ✕
-          </button>
-          <button
-            type="button"
-            className="lightbox-arrow lightbox-arrow-left"
-            aria-label="이전 사진"
-            onClick={(e) => {
-              e.stopPropagation()
-              prev()
-            }}
-          >
-            ‹
-          </button>
-          <img src={photos[active].src} alt="" onClick={onImageClick} onMouseMove={onImageMouseMove} />
-          <button
-            type="button"
-            className="lightbox-arrow lightbox-arrow-right"
-            aria-label="다음 사진"
-            onClick={(e) => {
-              e.stopPropagation()
-              next()
-            }}
-          >
-            ›
-          </button>
-          <div className="lightbox-counter">
-            {active + 1} / {photos.length}
+        <div className="lightbox">
+          <div className="lightbox-frame" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+            <img src={photos[active].src} alt="" />
+            <button
+              type="button"
+              className="lightbox-close"
+              aria-label="닫기"
+              onClick={() => setActive(null)}
+            >
+              <CloseIcon />
+            </button>
+            {/* 참고 페이지처럼 좌우 가장자리 전체가 이전/다음 탭 존 */}
+            <button type="button" className="lightbox-zone lightbox-zone-left" aria-label="이전 사진" onClick={prev} />
+            <button type="button" className="lightbox-zone lightbox-zone-right" aria-label="다음 사진" onClick={next} />
+            <div className="lightbox-bottom">
+              <button type="button" className="lightbox-nav" aria-label="이전 사진" onClick={prev}>
+                <ChevronIcon dir="left" />
+              </button>
+              <span className="lightbox-counter">
+                {active + 1} / {photos.length}
+              </span>
+              <button type="button" className="lightbox-nav" aria-label="다음 사진" onClick={next}>
+                <ChevronIcon dir="right" />
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -320,7 +432,7 @@ function Gallery({ photos }) {
 function Accordion({ title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="accordion">
+    <div className={open ? 'accordion open' : 'accordion'}>
       <button type="button" className="accordion-header" onClick={() => setOpen((v) => !v)}>
         {title}
         <span className={open ? 'accordion-chevron open' : 'accordion-chevron'}>▾</span>
@@ -334,20 +446,42 @@ function accountNumberOf(bank) {
   return bank.replace(/\D/g, '')
 }
 
-function AccountRows({ entries }) {
+function AccountRows({ entries, side }) {
+  // 데이터 순서: 본인, 아버지, 어머니
+  const relationOf = (i) => (i === 0 ? side : i === 1 ? `${side} 아버지` : `${side} 어머니`)
   return (
     <>
-      {entries.map((entry) => (
-        <div className="account-row" key={entry.holder}>
-          <div className="account-info">
-            <p className="account-bank">{entry.bank}</p>
-            <p className="account-holder">{entry.holder}</p>
+      {entries.map((entry, i) => {
+        const [bankName, ...numberParts] = entry.bank.split(' ')
+        const number = numberParts.join(' ')
+        const info = (
+          <div className="account-copy-info">
+            <p className="account-bank-name">{bankName}</p>
+            <p className="account-number">{number}</p>
           </div>
-          <CopyButton className="pill-button" text={accountNumberOf(entry.bank)}>
-            복사하기
-          </CopyButton>
-        </div>
-      ))}
+        )
+        return (
+          <div className="account-card" key={entry.holder}>
+            <div className="account-card-top">
+              <span className="account-relation">{relationOf(i)}</span>
+              <span className="account-name">{entry.holder}</span>
+            </div>
+            <CopyButton
+              className="account-copy"
+              text={accountNumberOf(entry.bank)}
+              copiedChildren={
+                <>
+                  {info}
+                  <CheckIcon size={20} />
+                </>
+              }
+            >
+              {info}
+              <CopyIcon size={20} />
+            </CopyButton>
+          </div>
+        )
+      })}
     </>
   )
 }
@@ -438,22 +572,16 @@ function ClosingRaccoon({ src }) {
 }
 
 export default function App() {
-  const { groom, bride, venue, greeting, account, photos } = WEDDING
-  const d = weddingDate()
+  const { groom, bride, venue, greeting, account, information, photos } = WEDDING
 
   return (
     <div className="invitation">
       <header className="hero-photo">
         <img className="hero-bg" src={photos.hero} alt="" />
-        <div className="hero-info">
-          <p className="hero-venue-name">{venue.name}</p>
-          <p>{formatDate()}</p>
-        </div>
       </header>
 
       <section className="greeting-section">
         <div className="invite-block">
-          <img className="invite-letter" src={letterImg} alt="" />
           <div className="greeting">
             {greeting.map((line, i) =>
               line ? (
@@ -479,25 +607,33 @@ export default function App() {
       </section>
 
       <section className="section schedule-section">
-        <p className="schedule-big-date">
-          {pad(d.getMonth() + 1)} / {pad(d.getDate())}
-        </p>
-        <p className="schedule-date">{formatDayTime()}</p>
+        <p className="schedule-title">WEDDING DAY</p>
+        <p className="schedule-date-ko">{formatFullKo()}</p>
+        <p className="schedule-date-en">{formatFullEn()}</p>
+        <div className="schedule-line" />
         <Calendar />
+        <div className="schedule-line" />
         <Countdown />
       </section>
 
-      <Gallery photos={photos.gallery} />
-
-      <section className="section">
-        <HeartDivider />
-        <h2 className="section-heading">식장 위치</h2>
+      <section className="section location-section">
+        <h2 className="location-title">LOCATION</h2>
         <p className="venue-name">{venue.name}</p>
-        <p className="venue-address">{venue.address}</p>
-        <NaverMap />
-        <CopyButton className="copy-button" text={venue.address}>
-          주소 복사하기
+        <CopyButton
+          className="venue-address"
+          text={venue.address}
+          aria-label="주소 복사하기"
+          copiedChildren={
+            <>
+              {venue.address}
+              <CheckIcon />
+            </>
+          }
+        >
+          {venue.address}
+          <CopyIcon />
         </CopyButton>
+        <NaverMap />
         <div className="map-apps">
           {[
             {
@@ -526,7 +662,7 @@ export default function App() {
           {venue.transit.map((t) => (
             <div className="transit" key={t.title}>
               <h3>
-                <span className="transit-icon">{t.icon}</span> {t.title}
+                {TRANSIT_ICONS[t.icon] ?? <span className="transit-icon">{t.icon}</span>} {t.title}
               </h3>
               {t.lines.map((line) => (
                 <p key={line}>{line}</p>
@@ -536,16 +672,39 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section">
-        <HeartDivider />
-        <h2 className="section-heading">마음 전하실 곳</h2>
+      <Gallery photos={photos.gallery} />
+
+      <section className="section accounts-section">
+        <div className="accounts-topline" />
+        <h2 className="accounts-title">마음 전하실 곳</h2>
+        <p className="accounts-note">
+          참석이 어려우신 분들을 위해 기재했습니다
+          <br />
+          너그러운 마음으로 양해 부탁드립니다
+        </p>
         <div className="accounts">
           <Accordion title="신랑" defaultOpen={false}>
-            <AccountRows entries={account.groom} />
+            <AccountRows entries={account.groom} side="신랑" />
           </Accordion>
           <Accordion title="신부" defaultOpen={false}>
-            <AccountRows entries={account.bride} />
+            <AccountRows entries={account.bride} side="신부" />
           </Accordion>
+        </div>
+      </section>
+
+      <section className="section info-section">
+        <h2 className="schedule-title info-title">INFORMATION</h2>
+        <p className="accounts-title">안내</p>
+        <p className="accounts-note">저희 웨딩에 대한 사전 안내를 드립니다</p>
+        <div className="info-cards">
+          {information.map((item) => (
+            <div className="info-card" key={item.title}>
+              <h3 className="info-card-title">{item.title}</h3>
+              {item.lines.map((line, i) => (
+                <p key={i}>{line}</p>
+              ))}
+            </div>
+          ))}
         </div>
       </section>
 

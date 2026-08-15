@@ -1,7 +1,8 @@
 // ─────────────────────────────────────────────
 // 청첩장 정보는 이 파일만 수정하면 됩니다.
 // ─────────────────────────────────────────────
-import heroPhoto from './assets/photos/hero.png'
+// 히어로: 날짜·장소 텍스트가 포함된 필름 스트립 디자인 (하단 흰 여백은 잘라낸 상태)
+import heroPhoto from './assets/photos/hero-strip.jpg'
 
 // 갤러리 썸네일(정사각형)에서 각 사진의 크롭 기준점 (CSS object-position).
 // 세로 % 값이 작을수록 사진의 위쪽을 보여줍니다. 지정하지 않으면 중앙(50% 50%).
@@ -46,7 +47,7 @@ export const WEDDING = {
   // 예식 일시 (연, 월, 일, 시, 분) — 월은 1~12 그대로 적으면 됩니다.
   date: { year: 2026, month: 11, day: 7, hour: 12, minute: 30 },
   venue: {
-    name: '네이버 1784',
+    name: '네이버 1784 스카이홀',
     address: '경기도 성남시 분당구 정자일로 95',
     lat: 37.3588179,
     lng: 127.1052329,
@@ -57,16 +58,22 @@ export const WEDDING = {
     // (로컬 개발: .env.local, 배포: GitHub Actions secret NAVER_MAP_API_ID)
     // Client Secret(NAVER_MAP_API_KEY)은 서버용이라 프론트엔드 번들에는 넣지 않습니다.
     mapClientId: import.meta.env.VITE_NAVER_MAP_CLIENT_ID,
+    // icon은 App.jsx의 TRANSIT_ICONS 키 (subway | car | parking)
     transit: [
       {
-        icon: '🚈',
+        icon: 'subway',
         title: '지하철 이용 시',
-        lines: ['수인분당선 정자역 3번 출구에서 도보 15분'],
+        lines: ['수인분당선/신분당선 정자역 3번 출구에서 도보 15분'],
       },
       {
-        icon: '🚗',
-        title: '자가용 이용 시',
-        lines: ['건물 지하주차장 이용'], // TODO: 실제 안내로 수정
+        icon: 'car',
+        title: '자차 이용 시',
+        lines: ['‘네이버1784’ 검색', '경기 성남시 분당구 정자일로 95'],
+      },
+      {
+        icon: 'parking',
+        title: '주차',
+        lines: ['건물 내 주차, 당일 무료'],
       },
     ],
   },
@@ -76,6 +83,28 @@ export const WEDDING = {
     '이대로 오래오래 함께하고 싶어 결혼합니다♥',
     '가을이 깊어가는 11월의 첫 주말,',
     '저희의 가장 설레는 하루를 함께해 주세요.',
+  ],
+  // INFORMATION 섹션 (마음 전하실 곳 아래) 안내 카드들
+  information: [
+    {
+      title: '식사 안내',
+      lines: ['연회장은 예식 30분 전 부터 2시간 이용 가능합니다.'],
+    },
+    {
+      title: '포토 부스',
+      lines: [
+        '예식장 한켠에 포토부스가 마련되어 있습니다.',
+        '사진 한 장은 가져가시고, 한 장은 방명록에 남겨주세요.',
+        '귀한 시간내어 축하해주신 여러분의 마음을 더욱 오래 추억하며 간직하겠습니다.',
+      ],
+    },
+    {
+      title: '플라워 래핑',
+      lines: [
+        '저희의 결혼식을 아름답게 채워준 꽃들을 예식 후 작은 꽃다발로 묶어 감사한 마음과 함께 나누어 드립니다.',
+        '특별한 하루를 함께해 주신 마음처럼 예쁜 꽃과 함께 행복한 하루 되시면 좋겠습니다.',
+      ],
+    },
   ],
   account: {
     groom: [
