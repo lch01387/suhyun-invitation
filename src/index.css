@@ -97,7 +97,7 @@ body {
 }
 
 .invite-block {
-  padding: 10px 26px 40px;
+  padding: 56px 26px 40px;
   background: var(--card);
   color: var(--ink);
 }
@@ -141,6 +141,41 @@ body {
   height: auto;
 }
 
+/* 사진 4번째(빈) 칸(세로 75%~100%)을 텍스트가 채우도록 중앙 정렬 */
+.hero-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 75%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+.hero-heart {
+  display: block;
+  margin: 0 auto 10px;
+  width: 17px;
+  height: 17px;
+}
+
+.hero-date {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.hero-venue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
 /* ── Greeting ───────────────────── */
 .greeting {
   text-align: center;
@@ -176,7 +211,10 @@ body {
 .parents {
   padding: 0 26px 44px;
   text-align: center;
-  font-size: 0.88rem;
+  /* 인사말 본문(.invite-block .greeting p)과 동일한 폰트·크기 */
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
   line-height: 2.1;
   color: var(--ink-soft);
   background: var(--card);
@@ -341,7 +379,8 @@ body {
 /* ── Gallery ────────────────────── */
 .gallery-section {
   padding-top: 64px;
-  padding-bottom: 64px;
+  /* 마지막 사진 줄과 다음(INFORMATION) 섹션 사이 간격 = 사진 간격(2px) */
+  padding-bottom: 2px;
 }
 
 /* GALLERY 타이틀과 사진 그리드 사이 간격 */
@@ -365,6 +404,7 @@ body {
   background: none;
   cursor: pointer;
   font: inherit;
+  overflow: hidden; /* 확대(zoom)된 썸네일이 셀 밖으로 넘치지 않게 */
 }
 
 .gallery-photo img {
@@ -596,37 +636,6 @@ body {
   opacity: 0.9;
 }
 
-/* ── Contact ────────────────────── */
-.contact-row {
-  display: flex;
-  align-items: center;
-  padding: 14px 6px;
-}
-
-.contact-row + .contact-row {
-  border-top: 1px solid var(--line);
-}
-
-.contact-role {
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-  width: 52px;
-}
-
-.contact-name {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-right: 10px;
-}
-
-.contact-phone {
-  flex: 1;
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  margin-right: 10px;
-}
-
 .pill-button {
   background: var(--mint-pale);
   color: var(--mint-deep);
@@ -690,6 +699,7 @@ body {
   color: #020817;
   opacity: 0.9;
   word-break: keep-all;
+  white-space: pre-line;
 }
 
 .info-card p + p {
@@ -832,7 +842,8 @@ body {
 
 /* ── Closing raccoon ────────────── */
 .closing-raccoon {
-  padding: 8px 26px;
+  /* 위 섹션(마음 전하실 곳 등)과 바위너구리 사이 50px 간격 */
+  padding: 50px 26px 8px;
   text-align: center;
   background: var(--card);
 }
@@ -872,36 +883,97 @@ body {
   transform: scale(0.94);
 }
 
+/* 화면 양옆 전체 높이에서 안쪽으로 뿜어진 뒤 바닥 아래로 떨어지는 클로버 */
 .clover-burst {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  overflow: visible;
+  overflow: hidden;
+  z-index: 900;
 }
 
+/* 시작 위치가 화면 밖(-60px)이라 등장/퇴장 모두 투명도 변화 없이 처리.
+   X축(등속)과 Y축(중력 포물선)을 바깥/안쪽 요소로 분리해 부드러운 곡선 궤적을 만든다 */
 .clover-particle {
   position: absolute;
-  top: 50%;
-  left: 50%;
   line-height: 1;
-  opacity: 0;
-  animation-name: clover-fly;
-  animation-timing-function: ease-out;
-  animation-fill-mode: forwards;
+  animation-name: clover-x;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
 }
 
-@keyframes clover-fly {
+.clover-particle.from-left {
+  left: -60px;
+}
+
+.clover-particle.from-right {
+  right: -60px;
+}
+
+/* Y축: 시작~끝을 하나의 구간으로 두고, 파티클별 cubic-bezier(포물선)로 궤적을 만든다.
+   회전은 최내부 요소에만 걸어 X/Y 이동축이 화면 좌표에 고정되도록 한다 */
+.clover-inner {
+  display: inline-block;
+  animation-name: clover-y;
+  animation-fill-mode: both;
+  animation-duration: inherit;
+  animation-delay: inherit;
+}
+
+.clover-spin {
+  display: inline-block;
+  animation-name: clover-spin;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-duration: inherit;
+  animation-delay: inherit;
+}
+
+@keyframes clover-x {
   0% {
-    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(0.4);
-    opacity: 0;
-  }
-  18% {
-    opacity: 1;
+    transform: translateX(0);
   }
   100% {
-    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1);
-    opacity: 0;
+    transform: translateX(var(--dx));
   }
+}
+
+@keyframes clover-y {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(var(--fall));
+  }
+}
+
+@keyframes clover-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(var(--rot));
+  }
+}
+
+/* ── Easter egg (바위너구리 10번 클릭) ── */
+.easter-egg {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background: #000;
+  cursor: pointer;
+}
+
+.easter-egg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* ── Footer ─────────────────────── */

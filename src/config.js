@@ -19,6 +19,11 @@ const galleryCropPositions = {
   15: '50% 15%', // 위로
 }
 
+// 썸네일 확대 설정: scale 2 = 원본의 1/4 영역만 표시, origin = 확대 기준 위치
+const galleryZooms = {
+  9: { scale: 2, origin: 'left 65%' }, // 맨 왼쪽, 중간보다 살짝 아래 1/4 영역
+}
+
 // 웨딩 갤러리 사진 (src/assets/photos/gallery/), 파일명 숫자순 정렬
 const galleryPhotos = Object.entries(
   import.meta.glob('./assets/photos/gallery/g*.jpg', { eager: true, import: 'default' }),
@@ -26,7 +31,7 @@ const galleryPhotos = Object.entries(
   .sort(([a], [b]) => parseInt(a.match(/g(\d+)/)[1], 10) - parseInt(b.match(/g(\d+)/)[1], 10))
   .map(([path, src]) => {
     const num = parseInt(path.match(/g(\d+)/)[1], 10)
-    return { src, pos: galleryCropPositions[num] || '50% 50%' }
+    return { src, pos: galleryCropPositions[num] || '50% 50%', zoom: galleryZooms[num] }
   })
 
 export const WEDDING = {
@@ -92,17 +97,18 @@ export const WEDDING = {
     },
     {
       title: '포토 부스',
+      // 배열 항목 = 문단, 항목 안의 \n = 줄바꿈
       lines: [
         '예식장 한켠에 포토부스가 마련되어 있습니다.',
-        '사진 한 장은 가져가시고, 한 장은 방명록에 남겨주세요.',
-        '귀한 시간내어 축하해주신 여러분의 마음을 더욱 오래 추억하며 간직하겠습니다.',
+        '사진 한 장은 가져가시고,\n한 장은 방명록에 남겨주세요.',
+        '귀한 시간내어 축하해주신 여러분의 마음을\n더욱 오래 추억하며 간직하겠습니다.',
       ],
     },
     {
       title: '플라워 래핑',
       lines: [
-        '저희의 결혼식을 아름답게 채워준 꽃들을 예식 후 작은 꽃다발로 묶어 감사한 마음과 함께 나누어 드립니다.',
-        '특별한 하루를 함께해 주신 마음처럼 예쁜 꽃과 함께 행복한 하루 되시면 좋겠습니다.',
+        '저희의 결혼식을 아름답게 채워준 꽃들을\n예식 후 작은 꽃다발로 묶어\n감사한 마음과 함께 나누어 드립니다.',
+        '특별한 하루를 함께해 주신 마음처럼\n예쁜 꽃과 함께 행복한 하루 되시면 좋겠습니다.',
       ],
     },
   ],

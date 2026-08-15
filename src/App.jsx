@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
 import raccoonImg from './assets/decor/raccoon.png'
+// 바위너구리 10번째 클릭 시 등장하는 이스터에그 사진
+import easterEggImg from './assets/decor/easter-egg.png'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -392,7 +394,18 @@ function Gallery({ photos }) {
       <div className="gallery-grid">
         {photos.map((photo, i) => (
           <button type="button" className="gallery-photo" key={i} onClick={() => setActive(i)}>
-            <img src={photo.src} alt="" loading="lazy" style={{ objectPosition: photo.pos }} />
+            <img
+              src={photo.src}
+              alt=""
+              loading="lazy"
+              style={{
+                objectPosition: photo.pos,
+                ...(photo.zoom && {
+                  transform: `scale(${photo.zoom.scale})`,
+                  transformOrigin: photo.zoom.origin,
+                }),
+              }}
+            />
           </button>
         ))}
       </div>
@@ -486,32 +499,48 @@ function AccountRows({ entries, side }) {
   )
 }
 
-const BURST_EMOJI = ['🍀']
+// 클릭 순서에 따라 로테이션되는 파티클 이모지 (1번째 클로버 → 2번째 흰 하트 → 3번째 케이크 → 반복)
+const BURST_ROTATION = ['🍀', '🤍', '🎂']
 
-function makeCloverBurst() {
+// 화면(뷰포트) 양옆에서 팝콘처럼 2차원 포물선으로 튀어나오는 파티클.
+// X는 등속(발사 방향 유지), Y는 초기 속도 + 일정한 중력의 정확한 포물선.
+// y(t) = v0·t + ½g·t² 를 cubic-bezier 하나로 표현해 중간 가속 튐이 없다.
+function makeCloverBurst(emoji) {
   const count = (10 + Math.floor(Math.random() * 7)) * 3
-  return Array.from({ length: count }, () => {
-    const angle = Math.random() * 2 * Math.PI
-    const distance = 50 + Math.random() * 130
-    const dx = distance * Math.cos(angle)
-    const dy = distance * Math.sin(angle)
+  const viewportH = window.innerHeight
+  return Array.from({ length: count }, (_, i) => {
+    const side = i % 2 === 0 ? 'left' : 'right'
+    const y = Math.random() * viewportH // 화면 전체 높이에 고르게 분포
+    const dir = side === 'left' ? 1 : -1
+    const peakH = 40 + Math.random() * 180 // 상승 최고점 높이(px) — 낮은 사출 각도
+    const fall = viewportH - y + 200 // 최종 낙하 지점(화면 바닥 아래, px)
+    // 포물선 p(u) = v0n·u + (1-v0n)·u² 이 최고점 -peakH/fall 을 갖도록 초기 기울기 계산
+    const r = peakH / fall
+    const v0n = -2 * r - 2 * Math.sqrt(r * r + r)
+    const bezierY1 = v0n / 3
+    const bezierY2 = bezierY1 + 1 / 3
     return {
       id: `${Date.now()}-${Math.random()}`,
-      emoji: BURST_EMOJI[Math.floor(Math.random() * BURST_EMOJI.length)],
-      dx,
-      dy,
-      size: 16 + Math.random() * 14,
+      emoji,
+      side,
+      y,
+      dxVw: dir * (20 + Math.random() * 70), // 짧은 팝 ~ 반대편 이탈까지 다양한 비거리
+      fall,
+      easeY: `cubic-bezier(0.33333, ${bezierY1.toFixed(4)}, 0.66667, ${bezierY2.toFixed(4)})`,
+      size: 32 + Math.random() * 28,
       rotate: Math.random() * 360 - 180,
       delay: Math.random() * 0.15,
-      duration: 0.7 + Math.random() * 0.5,
+      duration: 1.1 + Math.random() * 0.6,
     }
   })
 }
 
 function ClosingRaccoon({ src }) {
   const [bursts, setBursts] = useState([])
+  const [eggSrc, setEggSrc] = useState(null) // 이스터에그: 10번째 클릭 시 사진 전체화면 (null이면 닫힘)
   const imgRef = useRef(null)
   const canvasRef = useRef(null)
+  const clickCountRef = useRef(0)
 
   const isOpaqueAt = (clientX, clientY) => {
     const img = imgRef.current
@@ -532,41 +561,64 @@ function ClosingRaccoon({ src }) {
 
   const handleClick = (e) => {
     if (!isOpaqueAt(e.clientX, e.clientY)) return
+    clickCountRef.current += 1
+    // 10번째 클릭: 이스터에그 등장
+    if (clickCountRef.current >= 10) {
+      clickCountRef.current = 0
+      setEggSrc(easterEggImg)
+      return
+    }
+    const emoji = BURST_ROTATION[(clickCountRef.current - 1) % BURST_ROTATION.length]
     const id = `${Date.now()}-${Math.random()}`
-    setBursts((prev) => [...prev, { id, particles: makeCloverBurst() }])
+    setBursts((prev) => [...prev, { id, particles: makeCloverBurst(emoji) }])
     setTimeout(() => {
       setBursts((prev) => prev.filter((b) => b.id !== id))
-    }, 1500)
+    }, 2000)
   }
 
   return (
     <div className="closing-raccoon">
-      <div className="raccoon-stage">
-        <div className="clover-burst" aria-hidden="true">
-          {bursts.map((burst) =>
-            burst.particles.map((p) => (
-              <span
-                key={p.id}
-                className="clover-particle"
-                style={{
-                  fontSize: `${p.size}px`,
-                  '--dx': `${p.dx}px`,
-                  '--dy': `${p.dy}px`,
-                  '--rot': `${p.rotate}deg`,
-                  animationDelay: `${p.delay}s`,
-                  animationDuration: `${p.duration}s`,
-                }}
-              >
-                {p.emoji}
+      <div className="clover-burst" aria-hidden="true">
+        {/* 배치 경계 없이 파티클을 평탄화해 고유 key로만 재조정 —
+            앞선 배치가 제거돼도 진행 중인 배치가 리마운트(재시작)되지 않는다 */}
+        {bursts
+          .flatMap((burst) => burst.particles)
+          .map((p) => (
+            <span
+              key={p.id}
+              className={`clover-particle from-${p.side}`}
+              style={{
+                top: `${p.y}px`,
+                fontSize: `${p.size}px`,
+                '--dx': `${p.dxVw}vw`,
+                '--fall': `${p.fall}px`,
+                '--rot': `${p.rotate}deg`,
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+              }}
+            >
+              <span className="clover-inner" style={{ animationTimingFunction: p.easeY }}>
+                <span className="clover-spin">{p.emoji}</span>
               </span>
-            )),
-          )}
-        </div>
+            </span>
+          ))}
+      </div>
+      <div className="raccoon-stage">
         <button type="button" className="raccoon-button" onClick={handleClick}>
           <img ref={imgRef} src={src} alt="" />
         </button>
       </div>
-      <p className="raccoon-caption">행운을 가져다주는 바위너구리</p>
+      <p className="raccoon-caption">행운이 쏟아지는 바위너구리</p>
+      {eggSrc && (
+        <button
+          type="button"
+          className="easter-egg"
+          aria-label="닫기"
+          onClick={() => setEggSrc(null)}
+        >
+          <img src={eggSrc} alt="" />
+        </button>
+      )}
     </div>
   )
 }
@@ -578,6 +630,12 @@ export default function App() {
     <div className="invitation">
       <header className="hero-photo">
         <img className="hero-bg" src={photos.hero} alt="" />
+        {/* 사진 마지막(빈) 칸에 원래 있던 텍스트 오버레이 */}
+        <div className="hero-info">
+          <Heart size={12} className="hero-heart" />
+          <p className="hero-date">2026년 11월 7일 토요일 오후 12시 30분</p>
+          <p className="hero-venue">네이버 1784 스카이홀</p>
+        </div>
       </header>
 
       <section className="greeting-section">
@@ -674,24 +732,6 @@ export default function App() {
 
       <Gallery photos={photos.gallery} />
 
-      <section className="section accounts-section">
-        <div className="accounts-topline" />
-        <h2 className="accounts-title">마음 전하실 곳</h2>
-        <p className="accounts-note">
-          참석이 어려우신 분들을 위해 기재했습니다
-          <br />
-          너그러운 마음으로 양해 부탁드립니다
-        </p>
-        <div className="accounts">
-          <Accordion title="신랑" defaultOpen={false}>
-            <AccountRows entries={account.groom} side="신랑" />
-          </Accordion>
-          <Accordion title="신부" defaultOpen={false}>
-            <AccountRows entries={account.bride} side="신부" />
-          </Accordion>
-        </div>
-      </section>
-
       <section className="section info-section">
         <h2 className="schedule-title info-title">INFORMATION</h2>
         <p className="accounts-title">안내</p>
@@ -708,24 +748,21 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section">
-        <HeartDivider />
-        <h2 className="section-heading">연락하기</h2>
-        <div className="contact-row">
-          <span className="contact-role">신랑</span>
-          <span className="contact-name">{groom.name}</span>
-          <span className="contact-phone">{groom.phone}</span>
-          <a className="pill-button" href={`tel:${groom.phone}`}>
-            전화하기
-          </a>
-        </div>
-        <div className="contact-row">
-          <span className="contact-role">신부</span>
-          <span className="contact-name">{bride.name}</span>
-          <span className="contact-phone">{bride.phone}</span>
-          <a className="pill-button" href={`tel:${bride.phone}`}>
-            전화하기
-          </a>
+      <section className="section accounts-section">
+        <div className="accounts-topline" />
+        <h2 className="accounts-title">마음 전하실 곳</h2>
+        <p className="accounts-note">
+          참석이 어려우신 분들을 위해 기재했습니다
+          <br />
+          너그러운 마음으로 양해 부탁드립니다
+        </p>
+        <div className="accounts">
+          <Accordion title="신랑" defaultOpen={false}>
+            <AccountRows entries={account.groom} side="신랑" />
+          </Accordion>
+          <Accordion title="신부" defaultOpen={false}>
+            <AccountRows entries={account.bride} side="신부" />
+          </Accordion>
         </div>
       </section>
 
