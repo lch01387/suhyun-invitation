@@ -266,9 +266,9 @@ function Gallery({ photos }) {
       <HeartDivider />
       <h2 className="section-heading">웨딩 갤러리</h2>
       <div className="gallery-grid">
-        {photos.map((src, i) => (
+        {photos.map((photo, i) => (
           <button type="button" className="gallery-photo" key={i} onClick={() => setActive(i)}>
-            <img src={src} alt="" loading="lazy" />
+            <img src={photo.src} alt="" loading="lazy" style={{ objectPosition: photo.pos }} />
           </button>
         ))}
       </div>
@@ -296,7 +296,7 @@ function Gallery({ photos }) {
           >
             ‹
           </button>
-          <img src={photos[active]} alt="" onClick={onImageClick} onMouseMove={onImageMouseMove} />
+          <img src={photos[active].src} alt="" onClick={onImageClick} onMouseMove={onImageMouseMove} />
           <button
             type="button"
             className="lightbox-arrow lightbox-arrow-right"

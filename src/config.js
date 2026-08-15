@@ -3,12 +3,30 @@
 // ─────────────────────────────────────────────
 import heroPhoto from './assets/photos/hero.png'
 
-// 웨딩 갤러리 사진 12장 (src/assets/photos/gallery/), 파일명 숫자순 정렬
+// 갤러리 썸네일(정사각형)에서 각 사진의 크롭 기준점 (CSS object-position).
+// 세로 % 값이 작을수록 사진의 위쪽을 보여줍니다. 지정하지 않으면 중앙(50% 50%).
+const galleryCropPositions = {
+  1: '50% 0%', // 상단으로
+  3: '50% 15%', // 위로
+  4: '50% 15%', // 위로
+  6: '50% 15%', // 위로
+  9: '50% 75%', // 아래로
+  10: '50% 35%', // 살짝 위로
+  12: '50% 15%', // 위로
+  13: '50% 15%', // 위로
+  14: '50% 75%', // 아래로
+  15: '50% 15%', // 위로
+}
+
+// 웨딩 갤러리 사진 (src/assets/photos/gallery/), 파일명 숫자순 정렬
 const galleryPhotos = Object.entries(
   import.meta.glob('./assets/photos/gallery/g*.jpg', { eager: true, import: 'default' }),
 )
   .sort(([a], [b]) => parseInt(a.match(/g(\d+)/)[1], 10) - parseInt(b.match(/g(\d+)/)[1], 10))
-  .map(([, src]) => src)
+  .map(([path, src]) => {
+    const num = parseInt(path.match(/g(\d+)/)[1], 10)
+    return { src, pos: galleryCropPositions[num] || '50% 50%' }
+  })
 
 export const WEDDING = {
   groom: {
