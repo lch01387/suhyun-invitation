@@ -589,7 +589,7 @@ function ClosingRaccoon({ src }) {
               className={`clover-particle from-${p.side}`}
               style={{
                 top: `${p.y}px`,
-                fontSize: `${p.size}px`,
+                '--psize': `${p.size}px`,
                 '--dx': `${p.dxVw}vw`,
                 '--fall': `${p.fall}px`,
                 '--rot': `${p.rotate}deg`,

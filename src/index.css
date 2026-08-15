@@ -897,9 +897,17 @@ body {
 .clover-particle {
   position: absolute;
   line-height: 1;
+  font-size: var(--psize);
   animation-name: clover-x;
   animation-timing-function: linear;
   animation-fill-mode: both;
+}
+
+/* 모바일에서는 파티클 지름을 절반으로 */
+@media (max-width: 480px) {
+  .clover-particle {
+    font-size: calc(var(--psize) / 2);
+  }
 }
 
 .clover-particle.from-left {
