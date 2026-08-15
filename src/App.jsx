@@ -558,6 +558,8 @@ function makeCloverBurst(emoji) {
 function ClosingRaccoon({ src }) {
   const [bursts, setBursts] = useState([])
   const [eggSrc, setEggSrc] = useState(null) // 이스터에그: 10번째 클릭 시 사진 전체화면 (null이면 닫힘)
+  const [hintClicks, setHintClicks] = useState(0) // "…?" 말풍선 표시용 클릭 수 (5회 이상이면 표시)
+  const [wobbleKey, setWobbleKey] = useState(0) // 클릭할 때마다 원샷 꿀렁 재생 (key 교체로 애니메이션 재시작)
   const imgRef = useRef(null)
   const canvasRef = useRef(null)
   const clickCountRef = useRef(0)
@@ -590,13 +592,16 @@ function ClosingRaccoon({ src }) {
 
   const handleClick = (e) => {
     if (!isOpaqueAt(e.clientX, e.clientY)) return
+    setWobbleKey((k) => k + 1) // 클릭 꿀렁
     clickCountRef.current += 1
-    // 10번째 클릭: 이스터에그 등장
+    // 10번째 클릭: 이스터에그 등장 (말풍선도 함께 사라짐)
     if (clickCountRef.current >= 10) {
       clickCountRef.current = 0
+      setHintClicks(0)
       setEggSrc(easterEggImg)
       return
     }
+    setHintClicks(clickCountRef.current)
     const emoji = BURST_ROTATION[(clickCountRef.current - 1) % BURST_ROTATION.length]
     const id = `${Date.now()}-${Math.random()}`
     setBursts((prev) => [...prev, { id, particles: makeCloverBurst(emoji) }])
@@ -633,8 +638,12 @@ function ClosingRaccoon({ src }) {
           ))}
       </div>
       <div className="raccoon-stage">
+        {hintClicks >= 5 && <div className="raccoon-bubble">...?</div>}
         <button type="button" className="raccoon-button" onClick={handleClick}>
-          <img ref={imgRef} src={src} alt="" />
+          {/* key 교체로 매 클릭마다 원샷 꿀렁 애니메이션을 처음부터 재생 */}
+          <span className="raccoon-click-wobble" key={wobbleKey}>
+            <img ref={imgRef} src={src} alt="" />
+          </span>
         </button>
       </div>
       <p className="raccoon-caption">행운이 쏟아지는 바위너구리</p>
