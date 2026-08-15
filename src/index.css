@@ -130,15 +130,19 @@ body {
 }
 
 /* ── Hero (photo) ───────────────── */
+/* 접속 직후 화면을 딱 채우도록 뷰포트 높이만큼 잡고 cover로 채운다(좌우 일부 크롭) */
 .hero-photo {
   position: relative;
   background: #fff;
+  height: 100vh;
+  height: 100dvh;
 }
 
 .hero-bg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* 사진 4번째(빈) 칸(세로 75%~100%)을 텍스트가 채우도록 중앙 정렬 */
