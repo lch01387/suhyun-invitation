@@ -981,24 +981,24 @@ body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  /* 5초 주기로 한 번씩 젤리처럼 꿀렁 — 클릭 유도 */
+  /* 3초 주기로 한 번씩 젤리처럼 꿀렁 — 클릭 유도 */
   transform-origin: bottom center;
-  animation: raccoon-wobble 5s ease-in-out infinite;
+  animation: raccoon-wobble 3s ease-in-out infinite;
 }
 
 @keyframes raccoon-wobble {
   0%,
-  14%,
+  22%,
   100% {
     transform: scale(1, 1);
   }
-  4% {
+  6% {
     transform: scale(1.08, 0.9);
   }
-  8% {
+  12% {
     transform: scale(0.94, 1.07);
   }
-  11% {
+  18% {
     transform: scale(1.03, 0.97);
   }
 }
