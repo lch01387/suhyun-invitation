@@ -840,6 +840,120 @@ body {
   margin-top: 2px;
 }
 
+/* ── Love story (WEDDING INTERVIEW) — 참고 페이지 실측 값 ── */
+.lovestory-section {
+  /* 참고 페이지 혼주 소개 섹션 배경 = 테마색 15% + 흰색 85% */
+  background: #edf4eb;
+  padding: 72px 26px;
+  text-align: center;
+}
+
+.lovestory-title {
+  font-family: 'SUIT', 'Noto Sans KR', sans-serif;
+  font-size: 1.875rem;
+  font-weight: 400;
+  color: #4d4d4d;
+}
+
+.lovestory-sub {
+  margin-top: 48px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #999;
+  line-height: 2;
+}
+
+/* 참고 페이지 '축하 연락하기' 버튼 실측: 배경 #9dbf8d + 흰색 글자 */
+.lovestory-button {
+  display: block;
+  width: 100%;
+  height: 48px;
+  margin-top: 56px;
+  background: #9dbf8d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.lovestory-button:active {
+  background: #8bb07a;
+}
+
+/* 인터뷰 팝업 — theirmood 참고: 콘텐츠 폭만 덮는 반투명(90%) 흰 오버레이 */
+.interview-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+}
+
+.interview-frame {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100%;
+  background: rgba(250, 250, 250, 0.9);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.interview-header {
+  position: relative;
+  flex-shrink: 0;
+  padding: 22px 48px 14px;
+  text-align: center;
+}
+
+.interview-header h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.interview-close {
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  border: none;
+  background: none;
+  padding: 4px;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.interview-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 26px 16px 80px;
+}
+
+.interview-q {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 18px;
+}
+
+.interview-a {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.interview-divider {
+  height: 1px;
+  background: #e2e2e2;
+  margin: 32px 0;
+}
+
 /* ── Closing raccoon ────────────── */
 .closing-raccoon {
   /* 위 섹션(마음 전하실 곳 등)과 바위너구리 사이 50px 간격 */

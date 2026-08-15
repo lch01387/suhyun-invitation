@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { WEDDING, weddingDate } from './config'
 import raccoonImg from './assets/decor/raccoon.png'
 // 바위너구리 10번째 클릭 시 등장하는 이스터에그 사진
-import easterEggImg from './assets/decor/easter-egg.png'
+import easterEggImg from './assets/decor/easter-egg.jpg'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -565,6 +565,12 @@ function ClosingRaccoon({ src }) {
   // 모바일 뒤로가기 시 이스터에그만 닫기
   useCloseOnBack(eggSrc !== null, () => setEggSrc(null))
 
+  // 페이지 로드 시 이스터에그 사진을 백그라운드에서 미리 받아 10번째 클릭 즉시 표시되게 함
+  useEffect(() => {
+    const img = new Image()
+    img.src = easterEggImg
+  }, [])
+
   const isOpaqueAt = (clientX, clientY) => {
     const img = imgRef.current
     if (!img) return true
@@ -646,8 +652,67 @@ function ClosingRaccoon({ src }) {
   )
 }
 
+// 참고 페이지의 OUR LOVE STORY 섹션(타이틀은 WEDDING INTERVIEW로 변경) — 버튼을 누르면 인터뷰 팝업이 뜬다
+function LoveStory({ groomName, brideName, interview }) {
+  const [open, setOpen] = useState(false)
+
+  // 모바일 뒤로가기 시 팝업만 닫기
+  useCloseOnBack(open, () => setOpen(false))
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    // 팝업이 열려 있는 동안 뒤 페이지 스크롤 잠금
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [open])
+
+  return (
+    <section className="section lovestory-section">
+      <h2 className="lovestory-title">WEDDING INTERVIEW</h2>
+      <div className="lovestory-sub">
+        <p>
+          {groomName} {brideName}의 러브스토리
+        </p>
+        <p>저희의 연애 추억을 확인해 보세요</p>
+      </div>
+      <button type="button" className="lovestory-button" onClick={() => setOpen(true)}>
+        신랑 &amp; 신부의 이야기 펼쳐보기
+      </button>
+      {open && (
+        <div className="interview-popup">
+          <div className="interview-frame">
+            <div className="interview-header">
+              <h3>{interview.popupTitle}</h3>
+              <button type="button" className="interview-close" aria-label="닫기" onClick={() => setOpen(false)}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="interview-body">
+              {interview.items.map((item, i) => (
+                <div className="interview-item" key={item.q}>
+                  {i > 0 && <div className="interview-divider" />}
+                  <h4 className="interview-q">{item.q}</h4>
+                  <p className="interview-a">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
 export default function App() {
-  const { groom, bride, venue, greeting, account, information, photos } = WEDDING
+  const { groom, bride, venue, greeting, account, information, interview, photos } = WEDDING
 
   return (
     <div className="invitation">
@@ -788,6 +853,8 @@ export default function App() {
           </Accordion>
         </div>
       </section>
+
+      <LoveStory groomName={groom.name} brideName={bride.name} interview={interview} />
 
       <ClosingRaccoon src={raccoonImg} />
 
