@@ -352,12 +352,32 @@ function CloseIcon({ size = 22 }) {
   )
 }
 
+// 오버레이(사진 확대 등)가 열려 있는 동안 히스토리 엔트리를 하나 쌓아,
+// 모바일 뒤로가기(popstate)가 이전 페이지로 나가는 대신 오버레이만 닫게 한다.
+// 클릭 등으로 직접 닫힌 경우에는 쌓아둔 엔트리를 되돌려(back) 히스토리를 원상복구한다.
+function useCloseOnBack(isOpen, close) {
+  useEffect(() => {
+    if (!isOpen) return
+    window.history.pushState({ overlay: true }, '')
+    const onPop = () => close()
+    window.addEventListener('popstate', onPop)
+    return () => {
+      window.removeEventListener('popstate', onPop)
+      if (window.history.state?.overlay) window.history.back()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen])
+}
+
 function Gallery({ photos }) {
   const [active, setActive] = useState(null) // 확대 중인 사진의 인덱스 (null이면 닫힘)
   const touchStartX = useRef(null)
 
   const prev = () => setActive((i) => (i - 1 + photos.length) % photos.length)
   const next = () => setActive((i) => (i + 1) % photos.length)
+
+  // 모바일 뒤로가기 시 뷰어만 닫기
+  useCloseOnBack(active !== null, () => setActive(null))
 
   useEffect(() => {
     if (active === null) return
@@ -541,6 +561,9 @@ function ClosingRaccoon({ src }) {
   const imgRef = useRef(null)
   const canvasRef = useRef(null)
   const clickCountRef = useRef(0)
+
+  // 모바일 뒤로가기 시 이스터에그만 닫기
+  useCloseOnBack(eggSrc !== null, () => setEggSrc(null))
 
   const isOpaqueAt = (clientX, clientY) => {
     const img = imgRef.current
