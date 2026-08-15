@@ -231,21 +231,86 @@ function ParentsLine({ text, name }) {
 }
 
 function Gallery({ photos }) {
-  const [active, setActive] = useState(null)
+  const [active, setActive] = useState(null) // 확대 중인 사진의 인덱스 (null이면 닫힘)
+
+  const prev = () => setActive((i) => (i - 1 + photos.length) % photos.length)
+  const next = () => setActive((i) => (i + 1) % photos.length)
+
+  useEffect(() => {
+    if (active === null) return
+    const onKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') prev()
+      else if (e.key === 'ArrowRight') next()
+      else if (e.key === 'Escape') setActive(null)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [active])
+
+  // 사진의 왼쪽 절반 클릭 → 이전, 오른쪽 절반 클릭 → 다음
+  const onImageClick = (e) => {
+    e.stopPropagation()
+    const rect = e.currentTarget.getBoundingClientRect()
+    if (e.clientX - rect.left < rect.width / 2) prev()
+    else next()
+  }
+
+  // 사진 위 커서: 왼쪽 절반은 ←, 오른쪽 절반은 → 모양으로 이동 방향을 표시
+  const onImageMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.cursor = e.clientX - rect.left < rect.width / 2 ? 'w-resize' : 'e-resize'
+  }
+
   return (
     <section className="section">
       <HeartDivider />
       <h2 className="section-heading">웨딩 갤러리</h2>
       <div className="gallery-grid">
         {photos.map((src, i) => (
-          <button type="button" className="gallery-photo" key={i} onClick={() => setActive(src)}>
+          <button type="button" className="gallery-photo" key={i} onClick={() => setActive(i)}>
             <img src={src} alt="" loading="lazy" />
           </button>
         ))}
       </div>
-      {active && (
+      {active !== null && (
         <div className="lightbox" onClick={() => setActive(null)}>
-          <img src={active} alt="" />
+          <button
+            type="button"
+            className="lightbox-close"
+            aria-label="닫기"
+            onClick={(e) => {
+              e.stopPropagation()
+              setActive(null)
+            }}
+          >
+            ✕
+          </button>
+          <button
+            type="button"
+            className="lightbox-arrow lightbox-arrow-left"
+            aria-label="이전 사진"
+            onClick={(e) => {
+              e.stopPropagation()
+              prev()
+            }}
+          >
+            ‹
+          </button>
+          <img src={photos[active]} alt="" onClick={onImageClick} onMouseMove={onImageMouseMove} />
+          <button
+            type="button"
+            className="lightbox-arrow lightbox-arrow-right"
+            aria-label="다음 사진"
+            onClick={(e) => {
+              e.stopPropagation()
+              next()
+            }}
+          >
+            ›
+          </button>
+          <div className="lightbox-counter">
+            {active + 1} / {photos.length}
+          </div>
         </div>
       )}
     </section>
@@ -266,7 +331,7 @@ function Accordion({ title, children, defaultOpen = true }) {
 }
 
 function accountNumberOf(bank) {
-  return bank.trim().split(/\s+/).pop().replace(/-/g, '')
+  return bank.replace(/\D/g, '')
 }
 
 function AccountRows({ entries }) {

@@ -3,6 +3,13 @@
 // ─────────────────────────────────────────────
 import heroPhoto from './assets/photos/hero.png'
 
+// 웨딩 갤러리 사진 12장 (src/assets/photos/gallery/), 파일명 숫자순 정렬
+const galleryPhotos = Object.entries(
+  import.meta.glob('./assets/photos/gallery/g*.jpg', { eager: true, import: 'default' }),
+)
+  .sort(([a], [b]) => parseInt(a.match(/g(\d+)/)[1], 10) - parseInt(b.match(/g(\d+)/)[1], 10))
+  .map(([, src]) => src)
+
 export const WEDDING = {
   groom: {
     name: '창현',
@@ -55,8 +62,8 @@ export const WEDDING = {
   account: {
     groom: [
       { holder: '이창현', bank: '하나은행 142-910-6971-6207' },
-      { holder: '이봉규', bank: '보류' },
-      { holder: '김인숙', bank: '보류' },
+      { holder: '이봉규', bank: '신한은행 110-156-277440' },
+      { holder: '김인숙', bank: '신한은행 110-513-545597' },
     ],
     bride: [
       { holder: '하지수', bank: '농협은행 302-1871-3425-41' },
@@ -64,18 +71,10 @@ export const WEDDING = {
       { holder: '김정남', bank: '농협 825072-56-017596' },
     ],
   },
-  // 히어로 사진은 실제 커플 사진(src/assets/photos/hero.png)을 사용합니다.
-  // 그 외는 임시 플레이스홀더 사진입니다 (디자인 참고 사이트의 샘플 사진).
+  // 히어로/갤러리 모두 실제 사진(src/assets/photos/)을 사용합니다.
   photos: {
     hero: heroPhoto,
-    gallery: [
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200077131-6d788e28-2.webp',
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200082500-3f9ec167-3.webp',
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200080444-c5f46512-0.webp',
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200074703-e2d35f9b-0.webp',
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200076374-88fe49bf-1.webp',
-      'https://d3e52aew3drki.cloudfront.net/foment_img_storage/moiitee_test/HappilyEverAfter/1782200077848-9e0adb26-3.webp',
-    ],
+    gallery: galleryPhotos,
   },
 }
 
