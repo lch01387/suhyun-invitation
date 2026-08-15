@@ -1,8 +1,13 @@
 name: Deploy to GitHub Pages
 
+# 사이트 루트(사용자/QR용)에는 항상 "최신 릴리즈 태그(v*)" 시점의 코드를,
+# /dev/ 경로(개발 확인용)에는 main 최신 코드를 함께 배포합니다.
+# 새 버전을 사용자에게 공개하려면 릴리즈를 발행하면 됩니다.
 on:
   push:
     branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -18,18 +23,49 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # 개발판: main 최신 코드
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0 # 최신 릴리즈 태그를 찾기 위해 전체 히스토리 + 태그 필요
+
+      # main 히스토리에서 가장 최근 v* 태그를 정식판으로 사용
+      - id: stable
+        run: echo "tag=$(git describe --tags --abbrev=0 --match 'v*')" >> "$GITHUB_OUTPUT"
+
+      # 정식판: 최신 릴리즈 태그 시점 코드
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.stable.outputs.tag }}
+          path: stable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build
+
+      # 정식판 빌드 → 사이트 루트 (base는 vite.config.js의 /suhyun-invitation/)
+      - run: npm ci && npm run build
+        working-directory: stable
         env:
           VITE_NAVER_MAP_CLIENT_ID: ${{ secrets.NAVER_MAP_API_ID }}
+
+      # 개발판 빌드 → /dev/ (base를 CLI로 덮어씀)
+      - run: npm ci && npx vite build --base=/suhyun-invitation/dev/
+        env:
+          VITE_NAVER_MAP_CLIENT_ID: ${{ secrets.NAVER_MAP_API_ID }}
+
+      # 정식판 루트 + 개발판 dev/ 로 합치기
+      - run: |
+          mkdir -p site/dev
+          cp -R stable/dist/. site/
+          cp -R dist/. site/dev/
+          echo "root(stable): ${{ steps.stable.outputs.tag }}" && ls site
+          echo "dev(main): $GITHUB_SHA" && ls site/dev
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build
