@@ -2,7 +2,7 @@
 // 청첩장 정보는 이 파일만 수정하면 됩니다.
 // ─────────────────────────────────────────────
 // 히어로: 4컷 필름 스트립 — 맨 아래 컷은 비어 있어 날짜·장소 텍스트 오버레이가 올라간다
-import heroPhoto from './assets/photos/hero-strip4.jpg'
+import heroPhoto from './assets/photos/hero-strip5.jpg'
 
 // 갤러리 썸네일(정사각형)에서 각 사진의 크롭 기준점 (CSS object-position).
 // 세로 % 값이 작을수록 사진의 위쪽을 보여줍니다. 지정하지 않으면 중앙(50% 50%).
