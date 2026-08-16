@@ -708,6 +708,8 @@ function LoveStory({ groomName, brideName, interview }) {
               {interview.items.map((item, i) => (
                 <div className="interview-item" key={item.q}>
                   {i > 0 && <div className="interview-divider" />}
+                  {item.photo && <img className="interview-photo" src={item.photo} alt="" loading="lazy" />}
+                  {item.caption && <p className="interview-caption">{item.caption}</p>}
                   <h4 className="interview-q">{item.q}</h4>
                   <p className="interview-a">{item.a}</p>
                 </div>
