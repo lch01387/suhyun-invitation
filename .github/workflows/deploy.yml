@@ -1,7 +1,8 @@
 name: Deploy to GitHub Pages
 
 # 사이트 루트(사용자/QR용)에는 항상 "최신 릴리즈 태그(v*)" 시점의 코드를,
-# /dev/ 경로(개발 확인용)에는 main 최신 코드를 함께 배포합니다.
+# /dev/ 경로(개발 확인용)에는 main 최신 코드를,
+# /v1/ 경로에는 초판(v1.0.0)을 보존용으로 함께 배포합니다.
 # 새 버전을 사용자에게 공개하려면 릴리즈를 발행하면 됩니다.
 on:
   push:
@@ -39,6 +40,12 @@ jobs:
           ref: ${{ steps.stable.outputs.tag }}
           path: stable
 
+      # 보존판: 초판 v1.0.0 고정
+      - uses: actions/checkout@v4
+        with:
+          ref: v1.0.0
+          path: v1
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -55,13 +62,21 @@ jobs:
         env:
           VITE_NAVER_MAP_CLIENT_ID: ${{ secrets.NAVER_MAP_API_ID }}
 
-      # 정식판 루트 + 개발판 dev/ 로 합치기
+      # 보존판(v1.0.0) 빌드 → /v1/
+      - run: npm ci && npx vite build --base=/suhyun-invitation/v1/
+        working-directory: v1
+        env:
+          VITE_NAVER_MAP_CLIENT_ID: ${{ secrets.NAVER_MAP_API_ID }}
+
+      # 정식판 루트 + 개발판 dev/ + 보존판 v1/ 로 합치기
       - run: |
-          mkdir -p site/dev
+          mkdir -p site/dev site/v1
           cp -R stable/dist/. site/
           cp -R dist/. site/dev/
+          cp -R v1/dist/. site/v1/
           echo "root(stable): ${{ steps.stable.outputs.tag }}" && ls site
           echo "dev(main): $GITHUB_SHA" && ls site/dev
+          echo "v1: v1.0.0" && ls site/v1
 
       - uses: actions/upload-pages-artifact@v3
         with:
