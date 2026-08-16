@@ -555,6 +555,30 @@ function makeCloverBurst(emoji) {
   })
 }
 
+// ── 청첩장 공유 버튼 (참고 페이지 하단 디자인) ──
+// 공유 대상은 항상 사용자용 정식 주소(루트)
+const INVITE_URL = 'https://lch01387.github.io/suhyun-invitation/'
+
+function ShareButtons() {
+  return (
+    <section className="section share-section">
+      <CopyButton
+        className="share-copy"
+        text={INVITE_URL}
+        copiedChildren={
+          <>
+            <span>주소가 복사되었습니다</span>
+            <CheckIcon size={18} />
+          </>
+        }
+      >
+        <span>청첩장 주소 복사하기</span>
+        <CopyIcon size={18} />
+      </CopyButton>
+    </section>
+  )
+}
+
 function ClosingRaccoon({ src }) {
   const [bursts, setBursts] = useState([])
   const [eggSrc, setEggSrc] = useState(null) // 이스터에그: 10번째 클릭 시 사진 전체화면 (null이면 닫힘)
@@ -866,6 +890,8 @@ export default function App() {
       </section>
 
       <LoveStory groomName={groom.name} brideName={bride.name} interview={interview} />
+
+      <ShareButtons />
 
       <ClosingRaccoon src={raccoonImg} />
 
