@@ -6,23 +6,12 @@ import heroPhoto from './assets/photos/hero-strip5.jpg'
 
 // 갤러리 썸네일(정사각형)에서 각 사진의 크롭 기준점 (CSS object-position).
 // 세로 % 값이 작을수록 사진의 위쪽을 보여줍니다. 지정하지 않으면 중앙(50% 50%).
-const galleryCropPositions = {
-  1: '50% 0%', // 상단으로
-  3: '50% 15%', // 위로
-  4: '50% 15%', // 위로
-  6: '50% 15%', // 위로
-  9: '50% 75%', // 아래로
-  10: '50% 35%', // 살짝 위로
-  12: '50% 15%', // 위로
-  13: '50% 15%', // 위로
-  14: '50% 75%', // 아래로
-  15: '50% 15%', // 위로
-}
+// (2026-09 사진 전체 교체로 초기화 — 필요한 사진만 다시 지정)
+const galleryCropPositions = {}
 
 // 썸네일 확대 설정: scale 2 = 원본의 1/4 영역만 표시, origin = 확대 기준 위치
-const galleryZooms = {
-  9: { scale: 2, origin: 'left 65%' }, // 맨 왼쪽, 중간보다 살짝 아래 1/4 영역
-}
+// (2026-09 사진 전체 교체로 초기화 — 필요한 사진만 다시 지정)
+const galleryZooms = {}
 
 // 인터뷰 팝업 사진 (src/assets/photos/interview/i1.jpg ~ i5.jpg)
 const interviewPhotoModules = import.meta.glob('./assets/photos/interview/i*.jpg', {
