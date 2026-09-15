@@ -14,8 +14,8 @@ const galleryCropPositions = {
   8: '50% 65%', // 약간 아래로
   9: '50% 30%', // 위로
   10: '50% 35%', // 살짝 위로
-  12: '50% 0%', // 최상단으로
-  13: '50% 0%', // 최상단으로
+  12: '50% 70%', // 많이 아래로
+  13: '50% 35%', // 아래로
   14: '50% 75%', // 아래로
   15: '50% 15%', // 위로
 }
@@ -23,7 +23,7 @@ const galleryCropPositions = {
 // 썸네일 확대 설정: scale 2 = 원본의 1/4 영역만 표시, origin = 확대 기준 위치
 const galleryZooms = {
   9: { scale: 2, origin: 'left 65%' }, // 맨 왼쪽, 중간보다 살짝 아래 1/4 영역
-  13: { scale: 1.5, origin: 'center 60%' }, // 커플 중심으로 살짝 확대
+  13: { scale: 1.25, origin: 'center 60%' }, // 커플 중심으로 살짝 확대
 }
 
 // 인터뷰 팝업 사진 (src/assets/photos/interview/i1.jpg ~ i5.jpg)
